@@ -741,5 +741,140 @@ try{
 
 })();
 </script>
+
+<style id="suellytics-compact-css">
+  /* --- Compact chart sizing by type (non-destructive) --- */
+  canvas { max-height: 260px; width: 100% !important; }
+  /* menores (indicadores visuais) */
+  #gauge, #npsGauge, #pie { height: 180px !important; max-height: 180px !important; }
+  /* médios (tendências e comparativos) */
+  #line, #bars, #slaTrend, #resLine, #respBars { height: 220px !important; max-height: 220px !important; }
+  /* torna cards mais “respiráveis” em compact view */
+  .card { padding: 12px !important; }
+  /* Highlights executivos */
+  .exec-highlights { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .exec-chip { background:rgba(212,175,55,.12); border:1px solid rgba(212,175,55,.35);
+               color:#E8EEF6; padding:6px 10px; border-radius:12px; font-size:12px; }
+  .exec-chip b { color:#D4AF37; }
+</style>
+
+<script id="suellytics-compact-js">
+(function(){
+  // Helper access to data/controls reused from previous scripts
+  const $ = (s,ctx=document)=> ctx.querySelector(s);
+  const $$ = (s,ctx=document)=> Array.from(ctx.querySelectorAll(s));
+  function getData(){ try { return JSON.parse(document.getElementById('suellytics-data').textContent); } catch(e){ return {base:[], preditivo:[]}; } }
+  function rows(){ const d=getData(); return (d.preditivo && d.preditivo.length? d.preditivo : d.base).slice(); }
+  function readControls(){
+    const num=(id,d=0)=>{ const el=document.getElementById(id); if(!el) return d;
+      const raw=(el.value||el.textContent||'').toString().replace(/[^0-9.,-]/g,'').replace(',','.'); const v=Number(raw); return isNaN(v)?d:v; };
+    const SLA_DIAS=Math.max(1,num('slSl',5));
+    const ENTRADAS=Math.max(0,num('slIn',200));
+    const SAIDAS  =Math.max(0,num('slTp',190));
+    const BACKLOG =Math.max(0,num('slBk',360));
+    const BOT=(document.getElementById('ckBot')? !!document.getElementById('ckBot').checked : true);
+    return {SLA_DIAS,ENTRADAS,SAIDAS,BACKLOG,BOT};
+  }
+
+  // Compute signal KPIs for exec audience
+  function computeSignals(){
+    const c=readControls();
+    const eff = c.SAIDAS*(c.BOT?1.15:1);
+    const cap = eff/Math.max(1,c.ENTRADAS);
+    const sla = Math.max(55, Math.min(98, 70 + (cap-1)*25));
+    // backlog D+30
+    let cur=c.BACKLOG; const en=c.ENTRADAS/7, sa=eff/7;
+    for(let i=1;i<=30;i++){ cur=Math.max(0,cur+(en-sa)); }
+    const b30=Math.round(cur);
+    // risco top
+    const arr=rows().slice().sort((a,b)=> (Number(b.risco||0)-Number(a.risco||0)) || ((parseFloat(String(a.sla).replace(',','.'))||9999)-(parseFloat(String(b.sla).replace(',','.'))||9999)) );
+    const top=arr[0]||{};
+    return {
+      sla: Math.round(sla),
+      backlogHoje: Math.round(c.BACKLOG),
+      backlogD30: b30,
+      backlogTrend: b30 > c.BACKLOG ? '↑ alta' : (b30 < c.BACKLOG ? '↓ queda' : '→ estável'),
+      topPeca: top.peca||top['peça']||'—',
+      topCliente: top.cliente||'—',
+      topResp: top.responsavel||top['responsável']||'—',
+      topRisco: top.risco!=null? top.risco : '—'
+    };
+  }
+
+  // Inject highlights below KPIs grid if possible (non-destructive)
+  function injectExecHighlights(){
+    const kpiHost = (function(){
+      // try a container around KPI ids
+      const ids = ['kSla','kBk','kTp','kRt'].map(id=> document.getElementById(id));
+      const el = ids.find(Boolean);
+      return el ? el.closest('.kpis, .kpi, .card, section') : null;
+    })();
+    if(!kpiHost) return;
+    if(kpiHost.nextSibling && kpiHost.nextSibling.classList && kpiHost.nextSibling.classList.contains('exec-highlights')) return;
+
+    const sig = computeSignals();
+    const wrap = document.createElement('div');
+    wrap.className = 'exec-highlights';
+    wrap.innerHTML = `
+      <div class="exec-chip">SLA estimado: <b>${sig.sla}%</b> (meta ≥ 90%)</div>
+      <div class="exec-chip">Backlog: <b>${sig.backlogHoje}</b> → D+30: <b>${sig.backlogD30}</b> <span style="opacity:.85">${sig.backlogTrend}</span></div>
+      <div class="exec-chip">Maior risco: <b>${sig.topPeca}</b> • Cliente <b>${sig.topCliente}</b> • Resp. <b>${sig.topResp}</b> • Risco <b>${sig.topRisco}</b></div>
+    `;
+    kpiHost.parentNode.insertBefore(wrap, kpiHost.nextSibling);
+  }
+
+  // Add value labels to bar charts (bars & respBars) without external plugins
+  function annotateBars(chart){
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((ds, di)=>{
+      const meta = chart.getDatasetMeta(di);
+      meta.data.forEach((bar, i)=>{
+        const val = ds.data[i];
+        if(val == null) return;
+        const pos = bar.tooltipPosition();
+        ctx.save();
+        ctx.font = '12px Inter, Arial';
+        ctx.fillStyle = '#E8EEF6';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(val, pos.x, pos.y - 6);
+        ctx.restore();
+      });
+    });
+  }
+
+  // Hook onto existing chart instances if present
+  function applyAnnotations(){
+    if(window._barsChart){
+      _barsChart.options.animation = _barsChart.options.animation || {};
+      _barsChart.options.animation.onComplete = function(){ try{ annotateBars(_barsChart); }catch(e){} };
+      try{ _barsChart.update(); }catch(e){};
+    }
+    if(window._respBars){
+      _respBars.options.animation = _respBars.options.animation || {};
+      _respBars.options.animation.onComplete = function(){ try{ annotateBars(_respBars); }catch(e){} };
+      try{ _respBars.update(); }catch(e){};
+    }
+  }
+
+  function run(){
+    injectExecHighlights();
+    // re-run after any recompute triggered by controls
+    applyAnnotations();
+    // also after small delay to ensure charts rendered
+    setTimeout(applyAnnotations, 600);
+  }
+
+  if(document.readyState!=='loading') run();
+  else document.addEventListener('DOMContentLoaded', run);
+
+  ['slSl','slIn','slTp','slBk','ckBot'].forEach(id=>{
+    const el = document.getElementById(id); if(!el) return;
+    const evt = (el.tagName==='INPUT' && el.type==='range') ? 'input' : 'change';
+    el.addEventListener(evt, run);
+  });
+
+})();
+</script>
 </body>
 </html>
