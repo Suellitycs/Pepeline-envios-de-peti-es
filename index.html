@@ -3,55 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Transformação Digital no Direito — Dashboard Preditivo</title>
+  <title>Relatório Preditivo Tributário — Dashboard Interativo</title>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root{
-      --bg:#0b1117; /* dark navy */
-      --panel:#0f1722;
-      --ink:#e8eef6;
-      --muted:#94a3b8;
-      --line:#1f2a37;
-      --accent:#d4af37; /* dourado */
-      --ok:#10b981; /* verde */
-      --warn:#f59e0b; /* amarelo */
-      --bad:#ef4444; /* vermelho */
-      --brand:#14c6b7; /* verde-água Suellytics */
+      --bg:#061017;
+      --panel:#0b1520;
+      --ink:#f2f6fb;
+      --muted:#9fb3c8;
+      --line:#243447;
+      --accent:#17ffd0; /* neon verde-água */
+      --accent2:#ffd166; /* neon dourado */
+      --ok:#00ff9c; /* verde neon */
+      --warn:#ffd166; /* amarelo neon */
+      --bad:#ff4d6d; /* vermelho neon */
+      --brand:#17ffd0;
+      --glow: 0 0 28px rgba(23,255,208,.28), 0 0 70px rgba(255,209,102,.18);
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";background:linear-gradient(180deg,#0a0f14,#0b1117 35%,#0b1117);color:var(--ink)}
+    html,body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";background:radial-gradient(1400px 600px at 15% -10%, rgba(23,255,208,.10), transparent 60%), radial-gradient(800px 400px at 100% 0%, rgba(255,209,102,.07), transparent 60%), linear-gradient(180deg,#060b0f,#09131b 35%,#0b1117);color:var(--ink)}
     a,button{font-family:inherit}
 
     /* Header */
     header{position:sticky;top:0;z-index:40;background:rgba(11,17,23,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-    .wrap{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .wrap{max-width:1250px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
     .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px}
-    .logo{width:32px;height:32px;border-radius:10px;position:relative;overflow:hidden}
+    .logo{width:36px;height:36px;border-radius:10px;position:relative;overflow:hidden;box-shadow:var(--glow)}
     .logo:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 200deg at 50% 50%,#222,#a5892a,#ffe08a,#d4af37,#6c5c1a,#222);filter:saturate(1.2) brightness(1.05);animation:spin 7s linear infinite}
     .logo:after{content:"S";position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#1a1a1a;text-shadow:0 0 14px rgba(212,175,55,.45);mix-blend-mode:screen}
     @keyframes spin{to{transform:rotate(360deg)}}
 
     nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-    nav a, .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#0d151d;color:var(--ink);text-decoration:none;font-size:13px}
-    nav a:hover,.btn:hover{border-color:#2c3a49}
+    nav a, .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#0d151d;color:var(--ink);text-decoration:none;font-size:13px;transition:transform .15s ease}
+    nav a:hover,.btn:hover{border-color:#2c3a49; transform:translateY(-1px)}
     .btn-prim{border-color:transparent;background:linear-gradient(135deg,#2b3646,#18202a);position:relative}
     .btn-prim:after{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(135deg,#3b4758,rgba(212,175,55,.45));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
     /* Layout */
-    main{max-width:1180px;margin:22px auto;padding:0 18px;display:grid;gap:18px}
-    section.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:16px;padding:16px}
-    h1{font-size:26px;margin:0}
+    main{max-width:1250px;margin:22px auto;padding:0 18px;display:grid;gap:18px}
+    section.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--glow)}
+    h1{font-size:28px;margin:0}
     h2{font-size:18px;margin:0 0 4px}
     .kicker{color:var(--muted);font-size:12.5px;margin-bottom:10px}
 
     /* Pipeline */
     .pipeline{display:grid;grid-template-columns:repeat(7, minmax(120px,1fr));gap:12px}
-    .step{position:relative;background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:84px;overflow:hidden;transition:transform .2s ease}
+    .step{position:relative;background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:92px;overflow:hidden;transition:transform .2s ease}
     .step:hover{transform:translateY(-2px)}
     .step h4{margin:0 0 6px;font-size:13px}
-    .step .num{font-size:20px;font-weight:700;letter-spacing:.3px}
+    .step .num{font-size:22px;font-weight:800;letter-spacing:.3px}
     .step .muted{color:var(--muted);font-size:12px}
     .step:after{content:"";position:absolute;inset:auto auto -30px -30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(closest-side, rgba(212,175,55,.18), transparent 70%);transform:translate(0,0);transition:transform .5s ease}
     .step:hover:after{transform:translate(6px, -6px)}
@@ -66,13 +67,13 @@
     .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     .kpi{background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:14px;padding:14px}
     .kpi .label{color:var(--muted);font-size:12px}
-    .kpi .value{font-size:26px;font-weight:800;margin-top:6px}
+    .kpi .value{font-size:30px;font-weight:900;margin-top:6px;text-shadow:0 0 10px rgba(23,255,208,.22)}
     .kpi .trend{font-size:12px;margin-top:4px}
     .up{color:var(--ok)} .down{color:var(--bad)}
 
     /* Charts layout */
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .chartbox{background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:16px;padding:14px}
+    .chartbox{background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 0 0 1px rgba(23,255,208,.08), 0 0 40px rgba(23,255,208,.08)}
     canvas{max-width:100%}
 
     /* Preditivo */
@@ -87,10 +88,14 @@
     .risk.high{background:rgba(239,68,68,.12)}
 
     /* Presenter Notes */
-    .notes{position:fixed;right:0;top:0;bottom:0;width:min(520px,90vw);transform:translateX(110%);transition:transform .35s ease;z-index:60;background:#0b1117;border-left:1px solid var(--line);padding:18px;overflow:auto}
+    .notes{position:fixed;right:0;top:0;bottom:0;width:min(540px,92vw);transform:translateX(110%);transition:transform .35s ease;z-index:60;background:#0b1117;border-left:1px solid var(--line);padding:18px;overflow:auto}
     .notes.open{transform:translateX(0)}
     .notes h3{margin-top:0}
     .tag{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted)}
+
+    /* Resumo Exec */
+    .resumo{display:grid;grid-template-columns:1fr;gap:8px}
+    .pill{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;margin-right:6px}
 
     /* Footer */
     footer{opacity:.85;color:var(--muted);text-align:center;padding:24px}
@@ -102,33 +107,48 @@
 <body>
   <header>
     <div class="wrap">
-      <div class="brand"><div class="logo" title="Suellytics"></div> <div>
-        <div style="font-size:14px;letter-spacing:.3px">Suellytics</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:-2px">Transformação Digital no Direito</div>
-      </div></div>
+      <div class="brand">
+  <img src="logo.png" alt="Ivo Barboza & Advogados Associados" style="width:160px;height:auto;filter:drop-shadow(0 0 10px rgba(212,175,55,.35))"/>
+  <div>
+    <div style="font-size:14px;letter-spacing:.3px">Relatório Preditivo Tributário</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:-2px">Do dado bruto à decisão por evidência</div>
+  </div>
+</div>
       <nav>
         <a href="#pipeline">Pipeline</a>
         <a href="#indicadores">Indicadores</a>
         <a href="#graficos">Gráficos</a>
         <a href="#preditivo">Preditivo</a>
+        <a href="#resumo">Resumo</a>
         <button id="btnExport" class="btn">Exportar CSV</button>
         <button id="btnNotes" class="btn btn-prim">Notas do Apresentador</button>
         <button id="btnPrint" class="btn">PDF</button>
       </nav>
     </div>
   </header>
+  <style>
+    /* Modo apresentação */
+    body.present nav{display:none}
+    body.present .notes{transform:translateX(0)}
+    body.present h1{font-size:34px}
+  </style>
 
   <main>
     <!-- HERO / CONTROLS -->
     <section class="card">
-      <h1>Do dado bruto à decisão por evidência</h1>
-      <div class="kicker">Dados simulados para apresentação executiva — pipeline operacional, KPIs e quadro preditivo.</div>
+      <h1 class="hint" data-hint="Este é o objetivo do relatório: transformar informação dispersa em decisão clara, com previsões e recomendações.">Relatório Preditivo — Escritório Tributário</h1>
+      <div class="kicker">Simulação visual com dados fictícios para contextualizar como um relatório preditivo orienta a gestão tributária.</div>
       <div class="filters" style="margin-top:10px">
         <div class="control">SLA alvo (dias): <input type="range" id="slSl" min="1" max="7" value="1"> <span id="slSlV">1</span>d</div>
-        <div class="control">Throughput/sem: <input type="range" id="slTp" min="20" max="120" value="85"> <span id="slTpV">85</span></div>
-        <div class="control">Entradas/sem: <input type="range" id="slIn" min="20" max="120" value="90"> <span id="slInV">90</span></div>
-        <div class="control">Backlog atual: <input type="range" id="slBk" min="0" max="800" value="360"> <span id="slBkV">360</span></div>
-        <div class="control"><label><input type="checkbox" id="ckBot" checked> Agenda Bot (+15% throughput)</label></div>
+        <div class="control">Saídas/sem: <input type="range" id="slTp" min="20" max="140" value="95"> <span id="slTpV">95</span></div>
+        <div class="control">Entradas/sem: <input type="range" id="slIn" min="20" max="140" value="100"> <span id="slInV">100</span></div>
+        <div class="control">Backlog atual: <input type="range" id="slBk" min="0" max="1000" value="360"> <span id="slBkV">360</span></div>
+        <div class="control"><label><input type="checkbox" id="ckBot" checked> Agenda Bot (+15% saídas)</label></div>
+        <div class="control hint" data-hint="Cenários prontos para simular: Base (equilíbrio leve), Esticado (pressão moderada), Crítico (entrada muito acima da saída).">
+          <button class="btn" id="scBase">Cenário: Base</button>
+          <button class="btn" id="scEst">Cenário: Esticado</button>
+          <button class="btn" id="scCri">Cenário: Crítico</button>
+        </div>
       </div>
     </section>
 
@@ -144,19 +164,42 @@
       <h2>Indicadores Executivos</h2>
       <div class="kicker">KPIs de cumprimento, capacidade e qualidade</div>
       <div class="kpis">
-        <div class="kpi"><div class="label">SLA cumprido</div><div class="value" id="kSla">—</div><div class="trend" id="kSlaT">—</div></div>
-        <div class="kpi"><div class="label">Backlog</div><div class="value" id="kBk">—</div><div class="trend" id="kBkT">—</div></div>
-        <div class="kpi"><div class="label">Throughput (sem)</div><div class="value" id="kTp">—</div><div class="trend" id="kTpT">—</div></div>
-        <div class="kpi"><div class="label">Retrabalho</div><div class="value" id="kRt">—</div><div class="trend" id="kRtT">—</div></div>
+        <div class="kpi hint" data-hint="Mostra o percentual de entregas dentro do prazo combinado. Meta saudável: ≥ 90%."><div class="label">SLA cumprido</div><div class="value" id="kSla">—</div><div class="trend" id="kSlaT">—</div></div>
+        <div class="kpi hint" data-hint="Fila atual aguardando ação. Quanto maior, maior o tempo de espera e o risco de atraso."><div class="label">Backlog</div><div class="value" id="kBk">—</div><div class="trend" id="kBkT">—</div></div>
+        <div class="kpi hint" data-hint="Vazão semanal: quantas entregas concluímos por semana. Ajuda a ler capacidade."><div class="label">Saída semanal</div><div class="value" id="kTp">—</div><div class="trend" id="kTpT">—</div></div>
+        <div class="kpi hint" data-hint="Percentual que precisou ser refeito. Ideal é manter abaixo de 10%."><div class="label">Retrabalho</div><div class="value" id="kRt">—</div><div class="trend" id="kRtT">—</div></div>
+      </div>
+    </section>
+
+    <!-- INDICADORES FINANCEIROS -->
+    <section id="fin" class="card">
+      <h2>Indicadores Financeiros</h2>
+      <div class="kicker">Estimativa didática para dimensionar impacto financeiro</div>
+      <div class="filters">
+        <div class="control hint" data-hint="Valor médio em disputa por item da fila (pode ajustar conforme realidade).">Valor médio por item: R$ <input type="range" id="slVm" min="5000" max="100000" value="35000"> <span id="slVmV">35.000</span></div>
+        <div class="control hint" data-hint="Percentual de juros/multa mensal aplicável (estimativa).">% juros/multa ao mês: <input type="range" id="slTx" min="0" max="5" value="1.5" step="0.1"> <span id="slTxV">1,5%</span></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi hint" data-hint="Exposição financeira aproximada da fila atual."><div class="label">Exposição na fila</div><div class="value" id="kExpo">—</div><div class="trend" id="kExpoT">—</div></div>
+        <div class="kpi hint" data-hint="Juros/multa estimados sobre a fila por mês."><div class="label">Juros/multa (mês)</div><div class="value" id="kJuro">—</div><div class="trend" id="kJuroT">—</div></div>
+        <div class="kpi hint" data-hint="Valor potencial evitado ao reduzir o risco por ação operacional."><div class="label">Risco evitado (potencial)</div><div class="value" id="kEvita">—</div><div class="trend" id="kEvitaT">—</div></div>
+        <div class="kpi hint" data-hint="Economia estimada via Agenda Bot e priorização."><div class="label">Economia com automação</div><div class="value" id="kEcon">—</div><div class="trend" id="kEconT">—</div></div>
       </div>
     </section>
 
     <!-- CHARTS -->
     <section id="graficos" class="grid-2">
-      <div class="chartbox"><h2>% SLA — Gauge</h2><div class="kicker">Meta visual: atingir ≥ 90%</div><canvas id="gauge"></canvas></div>
-      <div class="chartbox"><h2>Backlog — previsão 30 dias</h2><div class="kicker">Tendência projetada considerando cenário atual</div><canvas id="line"></canvas></div>
-      <div class="chartbox"><h2>Throughput vs Entradas</h2><div class="kicker">Leitura de capacidade semanal</div><canvas id="bars"></canvas></div>
-      <div class="chartbox"><h2>Distribuição por tipo de peça</h2><div class="kicker">Composição do volume (simulado)</div><canvas id="pie"></canvas></div>
+      <div class="chartbox hint" data-hint="Velocímetro de cumprimento de prazo. Mantendo acima de 90% reduz risco e melhora satisfação do cliente."><h2>% de prazos cumpridos — Velocímetro</h2><div class="kicker">Meta visual: atingir ≥ 90%</div><canvas id="gauge"></canvas></div>
+      <div class="chartbox hint" data-hint="Projeção da fila para 30 dias considerando entradas e saídas atuais. Útil para planejar equipe."><h2>Fila (Backlog) — previsão 30 dias</h2><div class="kicker">Tendência projetada considerando cenário atual</div><canvas id="line"></canvas></div>
+      <div class="chartbox hint" data-hint="Comparação entre o que entra e o que sai por semana. Se entra mais do que sai, a fila cresce."><h2>Entradas x Saídas por semana</h2><div class="kicker">Leitura de capacidade semanal</div><canvas id="bars"></canvas></div>
+      <div class="chartbox hint" data-hint="Composição do volume por tipo de peça tributária. Ajuda a priorizar esforço."><h2>Composição por tipo de peça</h2><div class="kicker">Composição do volume (simulado)</div><canvas id="pie"></canvas></div>
+    </section>
+
+    <!-- AÇÕES RECOMENDADAS -->
+    <section id="acoes" class="card">
+      <h2>Próximas ações recomendadas</h2>
+      <div class="kicker">Sugestões automáticas a partir do risco e da capacidade</div>
+      <ul id="ulAcoes" style="margin:6px 0 0 16px; line-height:1.6"></ul>
     </section>
 
     <!-- PREDITIVO -->
@@ -167,6 +210,14 @@
         <select id="fPeca"><option value="">Peça: todas</option></select>
         <select id="fCliente"><option value="">Cliente: todos</option></select>
         <select id="fResp"><option value="">Responsável: todos</option></select>
+        <select id="fSLA"><option value="">SLA: todos</option><option>D+1</option><option>D≤2</option><option>D≤3</option></select>
+        <select id="fSort">
+          <option value="riscoDesc">Ordenar: risco ↓</option>
+          <option value="riscoAsc">Ordenar: risco ↑</option>
+          <option value="cliente">Ordenar: cliente</option>
+          <option value="resp">Ordenar: responsável</option>
+          <option value="sla">Ordenar: SLA</option>
+        </select>
         <input id="fBusca" type="search" placeholder="Buscar por ID/termo..." />
         <button id="btnClear" class="btn">Limpar filtros</button>
       </div>
@@ -185,6 +236,68 @@
         <tbody></tbody>
       </table>
     </section>
+
+    <!-- RESUMO EXECUTIVO -->
+    <section id="resumo" class="card">
+      <h2>Resumo Executivo – para cliente/diretoria</h2>
+      <div class="kicker">Texto gerado a partir dos controles e métricas atuais</div>
+      <div class="resumo">
+        <p id="rx"></p>
+        <div>
+          <span class="pill" id="pill-sla"></span>
+          <span class="pill" id="pill-lead"></span>
+          <span class="pill" id="pill-cap"></span>
+          <span class="pill" id="pill-risk"></span>
+        </div>
+      </div>
+    </section>
+      <!-- RESULTADOS (tendência) -->
+    <section id="resultados" class="grid-2">
+      <div class="chartbox hint" data-hint="Economia/mês simulada com base na fila, taxa e automação. Ajuda a mostrar impacto financeiro da gestão.">
+        <h2>Economia estimada — próximos 6 meses</h2>
+        <canvas id="resLine"></canvas>
+      </div>
+      <div class="chartbox hint" data-hint="Tendência do cumprimento de prazos ao longo dos meses.">
+        <h2>Tendência de prazos cumpridos</h2>
+        <canvas id="slaTrend"></canvas>
+      </div>
+    </section>
+
+    <!-- HEATMAP & RANKING -->
+    <section id="mapa" class="card">
+      <h2>Mapa de calor por responsável</h2>
+      <div class="kicker">Cores indicam risco médio (verde → vermelho)</div>
+      <table id="tbHeat"><thead><tr><th>Responsável</th><th>Risco médio</th><th>Fila</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <section id="ranking" class="card">
+      <h2>Ranking por cliente</h2>
+      <div class="kicker">Ordenado por risco médio (maior para menor)</div>
+      <table id="tbCli"><thead><tr><th>Cliente</th><th>Risco médio</th><th>Itens</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- CLIENTE (NPS e tempo de resposta) -->
+    <section id="cliente" class="grid-2">
+      <div class="chartbox hint" data-hint="Satisfação do cliente (escala 0–100).">
+        <h2>NPS (satisfação do cliente)</h2>
+        <canvas id="npsGauge"></canvas>
+      </div>
+      <div class="chartbox hint" data-hint="Tempo médio para retorno ao cliente.">
+        <h2>Tempo de resposta — média (dias)</h2>
+        <canvas id="respBars"></canvas>
+      </div>
+    </section>
+
+    <!-- AÇÕES / EXPORTAÇÃO -->
+    <section class="card">
+      <h2>Exportações</h2>
+      <div class="filters">
+        <div class="control hint" data-hint="Salva o estado atual (controles e números) para comparar mais tarde."><input id="scName" placeholder="nome do cenário"/> <button class="btn" id="btnSaveSc">Salvar cenário</button> <select id="selSc"><option value="">carregar cenário salvo…</option></select> <button class="btn" id="btnLoadSc">Carregar</button></div>
+        <div class="control hint" data-hint="Gera um arquivo com as recomendações atuais."><button class="btn" id="btnPlan">Exportar plano de ação (CSV)</button></div>
+        <div class="control hint" data-hint="Imprime somente o conteúdo essencial do resumo e indicadores."><button class="btn" id="btnResumoPDF">Resumo Executivo em PDF</button></div>
+      </div>
+    </section>
+
   </main>
 
   <aside class="notes" id="notes">
@@ -198,237 +311,410 @@
     <p><b>ROI:</b> robô de agenda poupa horas; checklist reduz retrabalho; relatório executivo cria cadência com cliente.</p>
   </aside>
 
-  <footer>© Suellytics — Do dado bruto à decisão por evidência</footer>
+  <footer>© Ivo Barboza & Advogados Associados — Do dado bruto à decisão por evidência</footer>
 
 <script>
-// =============== Helpers ===============
-const rnd = (min,max)=> Math.round(min + Math.random()*(max-min));
-const fmt = (n)=> n.toLocaleString('pt-BR');
-const qs = (s)=> document.querySelector(s);
-const qsa = (s)=> Array.from(document.querySelectorAll(s));
+// Tooltip simples em português
+const tip = document.createElement('div');
+tip.style.position='fixed';tip.style.zIndex='80';tip.style.pointerEvents='none';tip.style.padding='8px 10px';tip.style.background='rgba(9,19,27,.95)';tip.style.border='1px solid var(--line)';tip.style.borderRadius='10px';tip.style.color='var(--ink)';tip.style.fontSize='12.5px';tip.style.maxWidth='360px';tip.style.display='none';tip.style.boxShadow='0 0 20px rgba(23,255,208,.15)';
+document.body.appendChild(tip);
+function showTip(e, text){ tip.innerHTML=text; tip.style.left=e.clientX+12+'px'; tip.style.top=e.clientY+12+'px'; tip.style.display='block'; }
+function hideTip(){ tip.style.display='none'; }
 
-// Palavras sintéticas
-const PECAS = ["Recurso", "Contestação", "Embargos", "Agravo", "Manifestação", "Protocolo simples", "Alegações finais"]; 
-const CLIENTES = ["Carrefour","Caprich","Thomson","Via","B2W","Natura","Localiza"]; 
-const RESPONSAS = ["Adriana","Alexsandra","Amanda","Cinthia","Flávio","Jonathan","Josiane","Suelly","Suzana"];
-
-// Estado inicial (controles)
-let SLA_DIAS = 1; let TP_SEM = 85; let IN_SEM = 90; let BK = 360; let BOT = true;
-
-function readControls(){
-  SLA_DIAS = +slSl.value; TP_SEM = +slTp.value; IN_SEM = +slIn.value; BK = +slBk.value; BOT = ckBot.checked;
-  if(BOT) TP_SEM = Math.round(TP_SEM * 1.15);
-  // labels
-  slSlV.textContent = SLA_DIAS; slTpV.textContent = TP_SEM; slInV.textContent = IN_SEM; slBkV.textContent = BK;
+document.addEventListener('mouseover', (e)=>{ const t = e.target.closest('.hint'); if(!t) return; showTip(e, t.dataset.hint || ''); });
+document.addEventListener('mousemove', (e)=>{ if(tip.style.display==='block'){ tip.style.left=e.clientX+12+'px'; tip.style.top=e.clientY+12+'px'; }});
+document.addEventListener('mouseout', (e)=>{ const t = e.target.closest('.hint'); if(t) hideTip(); });
+</script>
+<script>
+// ===== Cenários prontos, financeiros e modo apresentação =====
+function setScenario(type){
+  if(document.getElementById('slIn')){
+    if(type==='base'){ slIn.value=95; slTp.value=100; slBk.value=320; ckBot.checked=true; }
+    if(type==='esticado'){ slIn.value=110; slTp.value=95; slBk.value=420; ckBot.checked=true; }
+    if(type==='critico'){ slIn.value=130; slTp.value=85; slBk.value=560; ckBot.checked=false; }
+    if(typeof readControls==='function'){ readControls(); const m=computeKPIs(); if(typeof makeCharts==='function') makeCharts(m); if(typeof genRows==='function') genRows(); if(typeof renderPredictive==='function') renderPredictive(); }
+  }
+}
+if (document.getElementById('scBase')) scBase.addEventListener('click', ()=> setScenario('base'));
+if (document.getElementById('scEst')) scEst.addEventListener('click', ()=> setScenario('esticado'));
+if (document.getElementById('scCri')) scCri.addEventListener('click', ()=> setScenario('critico'));
+if (document.getElementById('slVm')) slVm.addEventListener('input', ()=>{ const m=computeKPIs(); makeCharts(m); });
+if (document.getElementById('slTx')) slTx.addEventListener('input', ()=>{ const m=computeKPIs(); makeCharts(m); });
+// Apresentação
+(function(){ try{ const url=new URL(window.location); if(url.searchParams.get('present')==='1'){ document.body.classList.add('present'); if(typeof toggleNotes==='function') toggleNotes(true);} }catch(e){} })();
+</script>
+<script>
+// ===== Render extras (resultados, heatmap, ranking, cliente, cenários salvos, plano, resumo-PDF) =====
+function renderResultados(){
+  const rctx = document.getElementById('resLine').getContext('2d');
+  const sctx = document.getElementById('slaTrend').getContext('2d');
+  if(window.resLine) resLine.destroy(); if(window.slaTrendCh) slaTrendCh.destroy();
+  const vm = +slVm.value; const tx = +slTx.value/100; const base = BK*vm*tx; // juros do mês
+  const meses = ['M1','M2','M3','M4','M5','M6'];
+  const econ = meses.map((_,i)=> Math.round(base * (BOT? 0.20:0.10) * (1 + i*0.05)));
+  resLine = new Chart(rctx,{type:'line',data:{labels:meses,datasets:[{label:'Economia (R$)',data:econ,tension:.35,fill:true,borderWidth:2,borderColor:'#17ffd0',backgroundColor:'rgba(23,255,208,.18)'}]}, options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=> v.toLocaleString('pt-BR')}}}}});
+  const sla0 = Math.min(98, Math.max(55, parseInt(kSla.textContent)||80));
+  const slaArr = meses.map((_,i)=> Math.min(98, Math.round(sla0 + i*2*(BOT?1:0.7))));
+  slaTrendCh = new Chart(sctx,{type:'line',data:{labels:meses,datasets:[{label:'% prazos cumpridos',data:slaArr,tension:.35,borderColor:'#ffd166'}]}, options:{plugins:{legend:{display:false}},scales:{y:{min:60,max:100}}});
 }
 
-// =============== PIPELINE ===============
-function renderPipeline(){
-  const steps = [
-    {t:"Captura", v:rnd(450,600), d:"intimações/sem"},
-    {t:"Validação", v:rnd(440,590), d:"ajustes & cálculos"},
-    {t:"Classificação", v:rnd(430,580), d:"tipo/urgência"},
-    {t:"Minuta", v:rnd(400,560), d:"assistida por IA"},
-    {t:"Protocolo", v:rnd(380,540), d:"emissão"},
-    {t:"Cliente", v:rnd(370,520), d:"envio & status"},
-    {t:"Auditoria", v:rnd(360,510), d:"logs"},
-  ];
-  pipeGrid.innerHTML = steps.map((s,i)=>`
-    <div class="step">
-      <h4>${i+1}. ${s.t}</h4>
-      <div class="num">${fmt(s.v)}</div>
-      <div class="muted">${s.d}</div>
-    </div>`).join('');
+function renderHeatRanking(){
+  const byResp = {} , byCli = {};
+  RAW_ROWS.forEach(r=>{ byResp[r.r] = byResp[r.r]||{risco:0,cnt:0}; byResp[r.r].risco += r.risco; byResp[r.r].cnt++;
+                       byCli[r.c]  = byCli[r.c] || {risco:0,cnt:0}; byCli[r.c].risco  += r.risco; byCli[r.c].cnt++; });
+  const tbH = document.querySelector('#tbHeat tbody'); tbH.innerHTML = Object.entries(byResp).map(([k,v])=>{ const m = Math.round(v.risco/v.cnt); const color = m>=70? 'high' : m>=40? 'med':'low'; return `<tr><td>${k}</td><td><span class="risk ${color}">${m}%</span></td><td>${v.cnt}</td></tr>`}).join('');
+  const tbC = document.querySelector('#tbCli tbody'); tbC.innerHTML = Object.entries(byCli).sort((a,b)=> (b[1].risco/b[1].cnt)-(a[1].risco/a[1].cnt)).map(([k,v])=>{ const m = Math.round(v.risco/v.cnt); return `<tr><td>${k}</td><td>${m}%</td><td>${v.cnt}</td></tr>`}).join('');
 }
 
-// =============== KPIs ===============
-function computeKPIs(){
-  const net = TP_SEM - IN_SEM; // capacidade líquida
-  const leadSem = net>0? BK / net : Infinity;
-  const leadDias = isFinite(leadSem)? Math.round(leadSem*7) : 999;
-  const risco = isFinite(leadSem)? Math.min(100, Math.max(0, Math.round((leadDias / (SLA_DIAS*7))*100))) : 100;
-  // estimar %SLA cumprido (didático)
-  let slaPct = Math.max(55, Math.min(98, Math.round(100 - (risco*0.45))));
-  const retrabalho = Math.max(5, 25 - Math.round((TP_SEM/10)) + rnd(-2,2));
+// Cenários salvos em localStorage
+function saveScenario(){ const name = (document.getElementById('scName').value||'').trim(); if(!name) return alert('Dê um nome para o cenário.');
+  const data = {slIn:slIn.value, slTp:slTp.value, slBk:slBk.value, slSl:slSl.value, bot:ckBot.checked, vm:slVm.value, tx:slTx.value};
+  const all = JSON.parse(localStorage.getItem('cenarios_ib')||'{}'); all[name]=data; localStorage.setItem('cenarios_ib',JSON.stringify(all)); loadScenarioOptions(); alert('Cenário salvo: '+name); }
+function loadScenarioOptions(){ const sel = document.getElementById('selSc'); if(!sel) return; const all = JSON.parse(localStorage.getItem('cenarios_ib')||'{}'); sel.innerHTML = '<option value="">carregar cenário salvo…</option>' + Object.keys(all).map(k=> `<option>${k}</option>`).join(''); }
+function applyScenario(){ const sel = document.getElementById('selSc'); const name = sel.value; if(!name) return; const all = JSON.parse(localStorage.getItem('cenarios_ib')||'{}'); const d = all[name]; if(!d) return; slIn.value=d.slIn; slTp.value=d.slTp; slBk.value=d.slBk; slSl.value=d.slSl; ckBot.checked=d.bot; if(document.getElementById('slVm')) slVm.value=d.vm; if(document.getElementById('slTx')) slTx.value=d.tx; readControls(); const m=computeKPIs(); makeCharts(m); genRows(); renderPredictive(); renderResultados(); renderHeatRanking(); }
 
-  // Bind
-  kSla.textContent = slaPct+"%"; kSlaT.innerHTML = (slaPct>=90?'<span class="up">▲</span> meta ≥90%':'<span class="down">▼</span> melhorar');
-  kBk.textContent = fmt(BK); kBkT.textContent = net>0?`lead ${leadDias}d`:`saturado`;
-  kTp.textContent = fmt(TP_SEM); kTpT.textContent = net>0?`capacidade +${fmt(net)}/sem`:`capacidade 0`;
-  kRt.textContent = retrabalho+"%"; kRtT.innerHTML = retrabalho<=10?'<span class="up">▲</span> saudável':'<span class="down">▼</span> revisar checklist';
+// Plano de ação CSV (pega a lista atual)
+function exportPlan(){ const rows = Array.from(document.querySelectorAll('#ulAcoes li')).map(li=> li.textContent.replace(/^[• ]+/,'')); const header = 'Plano de ação
+'; const csv = header + rows.map(r=>'"'+r+'"').join('
+'); const blob = new Blob([String.fromCharCode(65279)+csv], {type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plano_acao.csv'; a.click(); URL.revokeObjectURL(a.href); }
 
-  return {slaPct, leadDias, risco, net};
+// Resumo Executivo em PDF
+function printResumo(){ window.scrollTo(0,0); document.body.classList.add('present'); window.print(); document.body.classList.remove('present'); }
+
+// Hooks
+if(document.getElementById('btnSaveSc')) btnSaveSc.addEventListener('click', saveScenario);
+if(document.getElementById('btnLoadSc')) btnLoadSc.addEventListener('click', applyScenario);
+if(document.getElementById('btnPlan')) btnPlan.addEventListener('click', exportPlan);
+if(document.getElementById('btnResumoPDF')) btnResumoPDF.addEventListener('click', printResumo);
+
+// Re-render extras quando números mudarem
+const _oldCompute = computeKPIs; computeKPIs = function(){ const m = _oldCompute.apply(this, arguments); try{ renderResultados(); renderHeatRanking(); }catch(e){} return m; }
+
+// Primeira carga
+try{ loadScenarioOptions(); renderResultados(); renderHeatRanking(); }catch(e){}
+</script>
+<script>
+// ===== Base fake + inicialização garantida =====
+function renderCliente(){
+  try{
+    const g = document.getElementById('npsGauge')?.getContext('2d');
+    const b = document.getElementById('respBars')?.getContext('2d');
+    if(!g||!b) return;
+    if(window.npsChart) npsChart.destroy(); if(window.respChart) respChart.destroy();
+    const slaTxt = (document.getElementById('kSla')?.textContent||'80').replace('%','');
+    const sla = Math.min(98, Math.max(60, parseInt(slaTxt)||80));
+    const nps = Math.max(0, Math.min(100, Math.round(sla - 10 + Math.random()*6)));
+    window.npsChart = new Chart(g,{type:'doughnut',data:{labels:['NPS','faltante'],datasets:[{data:[nps,100-nps], backgroundColor:['#17ffd0','#15202b']} ]},options:{cutout:'70%',rotation:270,circumference:180,plugins:{legend:{display:false},title:{display:true,text:nps+' pts',color:'#e8eef6',font:{size:22,weight:'bold'}}}}});
+    const canais = ['Telefone','E-mail','Portal','WhatsApp'];
+    const dias = canais.map(()=> Math.max(0.5, (7/Math.max(1,(window.TP_SEM||100)-(window.IN_SEM||95))) + (Math.random()*1.5))).map(v=> Number(v.toFixed(1)));
+    window.respChart = new Chart(b,{type:'bar',data:{labels:canais,datasets:[{data:dias, backgroundColor:['#ffd166','#17ffd0','#60a5fa','#ff4d6d']} ]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+  }catch(e){}
 }
+// Hook de recomputo
+try{
+  const _oldCompute = window.computeKPIs;
+  window.computeKPIs = function(){ const m = _oldCompute.apply(this, arguments); try{ renderCliente(); }catch(e){} return m; }
+}catch(e){}
+// Garantir boot após DOM pronto
+(function(){
+  function start(){ try{ if(typeof boot==='function'){ boot(); renderCliente(); } }catch(e){} }
+  if(document.readyState !== 'loading') start(); else document.addEventListener('DOMContentLoaded', start);
+})();
+</script>
 
-// =============== CHARTS ===============
-let gauge,line,bars,pie;
-function makeCharts(metrics){
-  const gctx = document.getElementById('gauge').getContext('2d');
-  const lctx = document.getElementById('line').getContext('2d');
-  const bctx = document.getElementById('bars').getContext('2d');
-  const pctx = document.getElementById('pie').getContext('2d');
-  // Destroy if exists
-  [gauge,line,bars,pie].forEach(c=>{ if(c){c.destroy()} });
 
-  // Gauge = doughnut meia-lua
-  gauge = new Chart(gctx,{
-    type:'doughnut',
-    data:{labels:['% SLA','faltante'],datasets:[{data:[metrics.slaPct,100-metrics.slaPct]}]},
-    options:{responsive:true,cutout:'70%',rotation:270,circumference:180,
-      plugins:{legend:{display:false},tooltip:{enabled:false},
-        title:{display:true,text:metrics.slaPct+'%',color:'#e8eef6',font:{size:24,weight:'bold'}}},
-      elements:{arc:{borderWidth:0}}
+<!-- *** Patch Suellytics: preenchimento KPIs, gráficos e Notas do Apresentador (não altera estrutura) *** -->
+
+<script id="suellytics-data" type="application/json">{"base": [{"id": "PX3000", "peca": "Ação Declaratória", "cliente": "Comércio Y", "responsavel": "Suzana", "sla": "D≤3", "risco": 48}, {"id": "PX3001", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Suelly", "sla": "D≤3", "risco": 63}, {"id": "PX3002", "peca": "Recurso Administrativo", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤2", "risco": 75}, {"id": "PX3003", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Suzana", "sla": "D+1", "risco": 43}, {"id": "PX3004", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Flávio", "sla": "D≤2", "risco": 83}, {"id": "PX3005", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Amanda", "sla": "D+1", "risco": 52}, {"id": "PX3006", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D≤3", "risco": 50}, {"id": "PX3007", "peca": "Embargos à Execução", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D≤2", "risco": 57}, {"id": "PX3008", "peca": "Embargos à Execução", "cliente": "Indústria X", "responsavel": "Suelly", "sla": "D+1", "risco": 55}, {"id": "PX3009", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 69}, {"id": "PX3010", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Jonathan", "sla": "D≤2", "risco": 43}, {"id": "PX3011", "peca": "Impugnação", "cliente": "Comércio Y", "responsavel": "Adriana", "sla": "D≤3", "risco": 49}, {"id": "PX3012", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Jonathan", "sla": "D+1", "risco": 85}, {"id": "PX3013", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Alexsandra", "sla": "D+1", "risco": 62}, {"id": "PX3014", "peca": "Protocolo simples", "cliente": "Serviços Z", "responsavel": "Jonathan", "sla": "D≤2", "risco": 40}, {"id": "PX3015", "peca": "Mandado de Segurança", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D≤2", "risco": 69}, {"id": "PX3016", "peca": "Mandado de Segurança", "cliente": "Comércio Y", "responsavel": "Cinthia", "sla": "D+1", "risco": 67}, {"id": "PX3017", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Flávio", "sla": "D≤3", "risco": 57}, {"id": "PX3018", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤3", "risco": 66}, {"id": "PX3019", "peca": "Mandado de Segurança", "cliente": "Indústria X", "responsavel": "Josiane", "sla": "D≤3", "risco": 60}, {"id": "PX3020", "peca": "Mandado de Segurança", "cliente": "Serviços Z", "responsavel": "Jonathan", "sla": "D≤3", "risco": 71}, {"id": "PX3021", "peca": "Recurso Administrativo", "cliente": "Serviços Z", "responsavel": "Cinthia", "sla": "D+1", "risco": 58}, {"id": "PX3022", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Amanda", "sla": "D≤3", "risco": 68}, {"id": "PX3023", "peca": "Embargos à Execução", "cliente": "Serviços Z", "responsavel": "Suzana", "sla": "D≤2", "risco": 68}, {"id": "PX3024", "peca": "Embargos à Execução", "cliente": "Comércio Y", "responsavel": "Suzana", "sla": "D+1", "risco": 70}, {"id": "PX3025", "peca": "Recurso Administrativo", "cliente": "Comércio Y", "responsavel": "Suelly", "sla": "D≤2", "risco": 70}, {"id": "PX3026", "peca": "Impugnação", "cliente": "Indústria X", "responsavel": "Cinthia", "sla": "D+1", "risco": 49}, {"id": "PX3027", "peca": "Agravo", "cliente": "Indústria X", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 66}, {"id": "PX3028", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Suzana", "sla": "D≤2", "risco": 58}, {"id": "PX3029", "peca": "Mandado de Segurança", "cliente": "Comércio Y", "responsavel": "Cinthia", "sla": "D≤3", "risco": 80}, {"id": "PX3030", "peca": "Protocolo simples", "cliente": "Comércio Y", "responsavel": "Suelly", "sla": "D≤3", "risco": 44}, {"id": "PX3031", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D+1", "risco": 53}, {"id": "PX3032", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Jonathan", "sla": "D+1", "risco": 58}, {"id": "PX3033", "peca": "Protocolo simples", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤3", "risco": 42}, {"id": "PX3034", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D≤3", "risco": 66}, {"id": "PX3035", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Amanda", "sla": "D+1", "risco": 62}, {"id": "PX3036", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Suelly", "sla": "D+1", "risco": 65}, {"id": "PX3037", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Jonathan", "sla": "D≤2", "risco": 50}, {"id": "PX3038", "peca": "Agravo", "cliente": "Comércio Y", "responsavel": "Suelly", "sla": "D+1", "risco": 74}, {"id": "PX3039", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D≤2", "risco": 57}, {"id": "PX3040", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Amanda", "sla": "D≤2", "risco": 51}, {"id": "PX3041", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Jonathan", "sla": "D≤3", "risco": 68}, {"id": "PX3042", "peca": "Recurso Administrativo", "cliente": "Comércio Y", "responsavel": "Amanda", "sla": "D+1", "risco": 57}, {"id": "PX3043", "peca": "Ação Declaratória", "cliente": "Serviços Z", "responsavel": "Amanda", "sla": "D+1", "risco": 46}, {"id": "PX3044", "peca": "Mandado de Segurança", "cliente": "Indústria X", "responsavel": "Adriana", "sla": "D≤3", "risco": 58}, {"id": "PX3045", "peca": "Ação Declaratória", "cliente": "Serviços Z", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 65}, {"id": "PX3046", "peca": "Mandado de Segurança", "cliente": "Indústria X", "responsavel": "Josiane", "sla": "D≤3", "risco": 82}, {"id": "PX3047", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D≤3", "risco": 54}, {"id": "PX3048", "peca": "Contestação", "cliente": "Indústria X", "responsavel": "Suzana", "sla": "D+1", "risco": 50}, {"id": "PX3049", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Suzana", "sla": "D≤3", "risco": 66}, {"id": "PX3050", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 60}, {"id": "PX3051", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Cinthia", "sla": "D+1", "risco": 67}, {"id": "PX3052", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Josiane", "sla": "D+1", "risco": 71}, {"id": "PX3053", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Josiane", "sla": "D≤3", "risco": 65}, {"id": "PX3054", "peca": "Protocolo simples", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Alexsandra", "sla": "D+1", "risco": 40}, {"id": "PX3055", "peca": "Ação Declaratória", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤3", "risco": 49}, {"id": "PX3056", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Adriana", "sla": "D≤2", "risco": 40}, {"id": "PX3057", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D+1", "risco": 74}, {"id": "PX3058", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Cinthia", "sla": "D+1", "risco": 44}, {"id": "PX3059", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 65}, {"id": "PX3060", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D+1", "risco": 65}, {"id": "PX3061", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D≤3", "risco": 39}, {"id": "PX3062", "peca": "Protocolo simples", "cliente": "Serviços Z", "responsavel": "Suzana", "sla": "D+1", "risco": 46}, {"id": "PX3063", "peca": "Embargos à Execução", "cliente": "Indústria X", "responsavel": "Suzana", "sla": "D+1", "risco": 49}, {"id": "PX3064", "peca": "Recurso Administrativo", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤3", "risco": 71}, {"id": "PX3065", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Suelly", "sla": "D≤2", "risco": 47}, {"id": "PX3066", "peca": "Contestação", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 57}, {"id": "PX3067", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D+1", "risco": 76}, {"id": "PX3068", "peca": "Impugnação", "cliente": "Indústria X", "responsavel": "Suelly", "sla": "D≤2", "risco": 67}, {"id": "PX3069", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Josiane", "sla": "D≤3", "risco": 52}, {"id": "PX3070", "peca": "Ação Declaratória", "cliente": "Indústria X", "responsavel": "Josiane", "sla": "D+1", "risco": 54}, {"id": "PX3071", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Cinthia", "sla": "D≤2", "risco": 64}, {"id": "PX3072", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Jonathan", "sla": "D≤3", "risco": 47}, {"id": "PX3073", "peca": "Ação Declaratória", "cliente": "Comércio Y", "responsavel": "Adriana", "sla": "D≤2", "risco": 47}, {"id": "PX3074", "peca": "Recurso Administrativo", "cliente": "Comércio Y", "responsavel": "Flávio", "sla": "D≤3", "risco": 67}, {"id": "PX3075", "peca": "Embargos à Execução", "cliente": "Comércio Y", "responsavel": "Jonathan", "sla": "D≤3", "risco": 66}, {"id": "PX3076", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Cinthia", "sla": "D≤2", "risco": 59}, {"id": "PX3077", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Cinthia", "sla": "D≤3", "risco": 75}, {"id": "PX3078", "peca": "Embargos à Execução", "cliente": "Comércio Y", "responsavel": "Josiane", "sla": "D+1", "risco": 73}, {"id": "PX3079", "peca": "Ação Declaratória", "cliente": "Comércio Y", "responsavel": "Jonathan", "sla": "D≤2", "risco": 52}, {"id": "PX3080", "peca": "Impugnação", "cliente": "Indústria X", "responsavel": "Amanda", "sla": "D≤2", "risco": 64}, {"id": "PX3081", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Jonathan", "sla": "D≤3", "risco": 62}, {"id": "PX3082", "peca": "Protocolo simples", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D≤2", "risco": 38}, {"id": "PX3083", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 80}, {"id": "PX3084", "peca": "Contestação", "cliente": "Comércio Y", "responsavel": "Flávio", "sla": "D+1", "risco": 47}, {"id": "PX3085", "peca": "Contestação", "cliente": "Comércio Y", "responsavel": "Josiane", "sla": "D+1", "risco": 59}, {"id": "PX3086", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Josiane", "sla": "D+1", "risco": 69}, {"id": "PX3087", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D≤2", "risco": 62}, {"id": "PX3088", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Amanda", "sla": "D+1", "risco": 51}, {"id": "PX3089", "peca": "Contestação", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D+1", "risco": 48}, {"id": "PX3090", "peca": "Protocolo simples", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Jonathan", "sla": "D≤2", "risco": 45}, {"id": "PX3091", "peca": "Recurso Administrativo", "cliente": "Serviços Z", "responsavel": "Cinthia", "sla": "D≤2", "risco": 52}, {"id": "PX3092", "peca": "Mandado de Segurança", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D+1", "risco": 59}, {"id": "PX3093", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 46}, {"id": "PX3094", "peca": "Recurso Administrativo", "cliente": "Comércio Y", "responsavel": "Suelly", "sla": "D+1", "risco": 59}, {"id": "PX3095", "peca": "Agravo", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 69}, {"id": "PX3096", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Jonathan", "sla": "D≤3", "risco": 55}, {"id": "PX3097", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Amanda", "sla": "D+1", "risco": 95}, {"id": "PX3098", "peca": "Ação Declaratória", "cliente": "Comércio Y", "responsavel": "Jonathan", "sla": "D≤2", "risco": 66}, {"id": "PX3099", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Flávio", "sla": "D+1", "risco": 62}, {"id": "PX3100", "peca": "Agravo", "cliente": "Serviços Z", "responsavel": "Josiane", "sla": "D+1", "risco": 41}, {"id": "PX3101", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Flávio", "sla": "D≤3", "risco": 57}, {"id": "PX3102", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Cinthia", "sla": "D+1", "risco": 53}, {"id": "PX3103", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Josiane", "sla": "D+1", "risco": 55}, {"id": "PX3104", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 39}, {"id": "PX3105", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Suelly", "sla": "D+1", "risco": 51}, {"id": "PX3106", "peca": "Impugnação", "cliente": "Indústria X", "responsavel": "Jonathan", "sla": "D≤2", "risco": 66}, {"id": "PX3107", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Josiane", "sla": "D+1", "risco": 59}, {"id": "PX3108", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Suzana", "sla": "D≤2", "risco": 58}, {"id": "PX3109", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Suelly", "sla": "D≤2", "risco": 45}, {"id": "PX3110", "peca": "Recurso Administrativo", "cliente": "Indústria X", "responsavel": "Amanda", "sla": "D+1", "risco": 47}, {"id": "PX3111", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Suzana", "sla": "D+1", "risco": 49}, {"id": "PX3112", "peca": "Mandado de Segurança", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D≤2", "risco": 70}, {"id": "PX3113", "peca": "Agravo", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D+1", "risco": 63}, {"id": "PX3114", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Amanda", "sla": "D≤3", "risco": 74}, {"id": "PX3115", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D+1", "risco": 43}, {"id": "PX3116", "peca": "Protocolo simples", "cliente": "Indústria X", "responsavel": "Jonathan", "sla": "D≤2", "risco": 40}, {"id": "PX3117", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Suelly", "sla": "D≤2", "risco": 48}, {"id": "PX3118", "peca": "Recurso Administrativo", "cliente": "Indústria X", "responsavel": "Jonathan", "sla": "D≤3", "risco": 54}, {"id": "PX3119", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Amanda", "sla": "D+1", "risco": 63}, {"id": "PX3120", "peca": "Mandado de Segurança", "cliente": "Comércio Y", "responsavel": "Suelly", "sla": "D≤3", "risco": 49}, {"id": "PX3121", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Suzana", "sla": "D+1", "risco": 46}, {"id": "PX3122", "peca": "Protocolo simples", "cliente": "Serviços Z", "responsavel": "Adriana", "sla": "D+1", "risco": 47}, {"id": "PX3123", "peca": "Embargos à Execução", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D+1", "risco": 74}, {"id": "PX3124", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Amanda", "sla": "D≤3", "risco": 52}, {"id": "PX3125", "peca": "Embargos à Execução", "cliente": "Indústria X", "responsavel": "Jonathan", "sla": "D≤2", "risco": 45}, {"id": "PX3126", "peca": "Mandado de Segurança", "cliente": "Serviços Z", "responsavel": "Alexsandra", "sla": "D+1", "risco": 68}, {"id": "PX3127", "peca": "Impugnação", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Adriana", "sla": "D+1", "risco": 54}, {"id": "PX3128", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Cinthia", "sla": "D≤3", "risco": 61}, {"id": "PX3129", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 66}, {"id": "PX3130", "peca": "Contestação", "cliente": "Comércio Y", "responsavel": "Flávio", "sla": "D+1", "risco": 61}, {"id": "PX3131", "peca": "Protocolo simples", "cliente": "Serviços Z", "responsavel": "Adriana", "sla": "D+1", "risco": 35}, {"id": "PX3132", "peca": "Protocolo simples", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Jonathan", "sla": "D+1", "risco": 44}, {"id": "PX3133", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Josiane", "sla": "D≤3", "risco": 47}, {"id": "PX3134", "peca": "Agravo", "cliente": "Comércio Y", "responsavel": "Suzana", "sla": "D≤3", "risco": 55}, {"id": "PX3135", "peca": "Protocolo simples", "cliente": "Comércio Y", "responsavel": "Cinthia", "sla": "D≤3", "risco": 45}, {"id": "PX3136", "peca": "Embargos à Execução", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Flávio", "sla": "D+1", "risco": 52}, {"id": "PX3137", "peca": "Contestação", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Jonathan", "sla": "D≤2", "risco": 54}, {"id": "PX3138", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Amanda", "sla": "D≤3", "risco": 60}, {"id": "PX3139", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Adriana", "sla": "D≤2", "risco": 60}, {"id": "PX3140", "peca": "Mandado de Segurança", "cliente": "Comércio Y", "responsavel": "Cinthia", "sla": "D≤2", "risco": 56}, {"id": "PX3141", "peca": "Ação Declaratória", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 49}, {"id": "PX3142", "peca": "Recurso Administrativo", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D≤3", "risco": 58}, {"id": "PX3143", "peca": "Protocolo simples", "cliente": "Comércio Y", "responsavel": "Adriana", "sla": "D≤2", "risco": 45}, {"id": "PX3144", "peca": "Impugnação", "cliente": "Serviços Z", "responsavel": "Adriana", "sla": "D+1", "risco": 48}, {"id": "PX3145", "peca": "Impugnação", "cliente": "Indústria X", "responsavel": "Adriana", "sla": "D+1", "risco": 63}, {"id": "PX3146", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Adriana", "sla": "D+1", "risco": 71}, {"id": "PX3147", "peca": "Mandado de Segurança", "cliente": "Serviços Z", "responsavel": "Amanda", "sla": "D+1", "risco": 45}, {"id": "PX3148", "peca": "Ação Declaratória", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Adriana", "sla": "D+1", "risco": 59}, {"id": "PX3149", "peca": "Mandado de Segurança", "cliente": "Indústria X", "responsavel": "Suelly", "sla": "D≤2", "risco": 67}, {"id": "PX3150", "peca": "Recurso Administrativo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Jonathan", "sla": "D≤3", "risco": 74}, {"id": "PX3151", "peca": "Mandado de Segurança", "cliente": "Ivo Barboza — Grupo A", "responsavel": "Suzana", "sla": "D+1", "risco": 64}, {"id": "PX3152", "peca": "Agravo", "cliente": "Ivo Barboza — Grupo B", "responsavel": "Flávio", "sla": "D+1", "risco": 62}, {"id": "PX3153", "peca": "Recurso Administrativo", "cliente": "Serviços Z", "responsavel": "Suelly", "sla": "D≤2", "risco": 45}, {"id": "PX3154", "peca": "Embargos à Execução", "cliente": "Comércio Y", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 76}, {"id": "PX3155", "peca": "Impugnação", "cliente": "Comércio Y", "responsavel": "Amanda", "sla": "D≤3", "risco": 47}, {"id": "PX3156", "peca": "Protocolo simples", "cliente": "Comércio Y", "responsavel": "Jonathan", "sla": "D+1", "risco": 43}, {"id": "PX3157", "peca": "Protocolo simples", "cliente": "Ivo Barboza — Grupo C", "responsavel": "Suzana", "sla": "D+1", "risco": 39}, {"id": "PX3158", "peca": "Ação Declaratória", "cliente": "Serviços Z", "responsavel": "Josiane", "sla": "D≤2", "risco": 45}, {"id": "PX3159", "peca": "Contestação", "cliente": "Serviços Z", "responsavel": "Alexsandra", "sla": "D≤2", "risco": 57}], "preditivo": [{"id": "PX2356", "peça": "Contestação", "cliente": "B2W", "responsável": "Alexsandra", "sla": "D≤2", "risco": 63, "drivers": "Condições normais"}, {"id": "PX9402", "peça": "Agravo", "cliente": "Via", "responsável": "Adriana", "sla": "D≤2", "risco": 63, "drivers": "Tipo crítico"}, {"id": "PX6005", "peça": "Agravo", "cliente": "B2W", "responsável": "Jonathan", "sla": "D≤2", "risco": 61, "drivers": "Tipo crítico"}, {"id": "PX7010", "peça": "Embargos", "cliente": "B2W", "responsável": "Flávio", "sla": "D+1", "risco": 60, "drivers": "Tipo crítico"}, {"id": "PX1376", "peça": "Manifestação", "cliente": "Via", "responsável": "Flávio", "sla": "D≤2", "risco": 59, "drivers": "Condições normais"}, {"id": "PX3319", "peça": "Agravo", "cliente": "Thomson", "responsável": "Cinthia", "sla": "D+1", "risco": 59, "drivers": "Tipo crítico"}, {"id": "PX1371", "peça": "Agravo", "cliente": "Natura", "responsável": "Jonathan", "sla": "D≤2", "risco": 58, "drivers": "Tipo crítico"}, {"id": "PX5688", "peça": "Alegações finais", "cliente": "Natura", "responsável": "Alexsandra", "sla": "D≤2", "risco": 58, "drivers": "Condições normais"}, {"id": "PX5520", "peça": "Agravo", "cliente": "Via", "responsável": "Alexsandra", "sla": "D≤3", "risco": 57, "drivers": "Tipo crítico"}, {"id": "PX9275", "peça": "Contestação", "cliente": "Natura", "responsável": "Alexsandra", "sla": "D≤3", "risco": 57, "drivers": "Condições normais"}, {"id": "PX7096", "peça": "Agravo", "cliente": "Via", "responsável": "Jonathan", "sla": "D≤2", "risco": 57, "drivers": "Tipo crítico"}, {"id": "PX2865", "peça": "Embargos", "cliente": "Via", "responsável": "Adriana", "sla": "D≤2", "risco": 57, "drivers": "Tipo crítico"}, {"id": "PX1500", "peça": "Embargos", "cliente": "Carrefour", "responsável": "Jonathan", "sla": "D+1", "risco": 56, "drivers": "Tipo crítico"}, {"id": "PX2639", "peça": "Agravo", "cliente": "Natura", "responsável": "Cinthia", "sla": "D≤2", "risco": 55, "drivers": "Tipo crítico"}, {"id": "PX8392", "peça": "Embargos", "cliente": "Natura", "responsável": "Jonathan", "sla": "D≤2", "risco": 55, "drivers": "Tipo crítico"}, {"id": "PX1705", "peça": "Agravo", "cliente": "Thomson", "responsável": "Jonathan", "sla": "D≤3", "risco": 54, "drivers": "Tipo crítico"}, {"id": "PX9101", "peça": "Recurso", "cliente": "Thomson", "responsável": "Flávio", "sla": "D≤3", "risco": 54, "drivers": "Tipo crítico"}, {"id": "PX4293", "peça": "Embargos", "cliente": "Thomson", "responsável": "Cinthia", "sla": "D≤2", "risco": 54, "drivers": "Tipo crítico"}, {"id": "PX4316", "peça": "Manifestação", "cliente": "Thomson", "responsável": "Jonathan", "sla": "D≤3", "risco": 53, "drivers": "Condições normais"}, {"id": "PX7354", "peça": "Embargos", "cliente": "Localiza", "responsável": "Josiane", "sla": "D≤2", "risco": 52, "drivers": "Tipo crítico"}, {"id": "PX5120", "peça": "Contestação", "cliente": "Natura", "responsável": "Cinthia", "sla": "D≤2", "risco": 52, "drivers": "Condições normais"}, {"id": "PX9275", "peça": "Agravo", "cliente": "Thomson", "responsável": "Adriana", "sla": "D≤2", "risco": 51, "drivers": "Tipo crítico"}, {"id": "PX5642", "peça": "Agravo", "cliente": "Thomson", "responsável": "Amanda", "sla": "D≤3", "risco": 51, "drivers": "Tipo crítico"}, {"id": "PX2302", "peça": "Manifestação", "cliente": "Via", "responsável": "Jonathan", "sla": "D≤3", "risco": 51, "drivers": "Condições normais"}, {"id": "PX5260", "peça": "Embargos", "cliente": "Caprich", "responsável": "Amanda", "sla": "D≤3", "risco": 51, "drivers": "Tipo crítico"}, {"id": "PX4334", "peça": "Alegações finais", "cliente": "Caprich", "responsável": "Suzana", "sla": "D≤2", "risco": 50, "drivers": "Condições normais"}, {"id": "PX8226", "peça": "Embargos", "cliente": "Carrefour", "responsável": "Adriana", "sla": "D≤3", "risco": 50, "drivers": "Tipo crítico"}, {"id": "PX2985", "peça": "Alegações finais", "cliente": "Caprich", "responsável": "Flávio", "sla": "D≤2", "risco": 50, "drivers": "Condições normais"}, {"id": "PX4384", "peça": "Protocolo simples", "cliente": "Via", "responsável": "Amanda", "sla": "D+1", "risco": 50, "drivers": "Condições normais"}, {"id": "PX7065", "peça": "Alegações finais", "cliente": "Thomson", "responsável": "Josiane", "sla": "D≤2", "risco": 50, "drivers": "Condições normais"}, {"id": "PX6552", "peça": "Alegações finais", "cliente": "Thomson", "responsável": "Suelly", "sla": "D+1", "risco": 49, "drivers": "Condições normais"}, {"id": "PX5985", "peça": "Contestação", "cliente": "Via", "responsável": "Cinthia", "sla": "D+1", "risco": 49, "drivers": "Condições normais"}, {"id": "PX8459", "peça": "Protocolo simples", "cliente": "Natura", "responsável": "Cinthia", "sla": "D≤2", "risco": 48, "drivers": "Condições normais"}, {"id": "PX7211", "peça": "Embargos", "cliente": "Thomson", "responsável": "Amanda", "sla": "D≤3", "risco": 48, "drivers": "Tipo crítico"}, {"id": "PX6954", "peça": "Manifestação", "cliente": "Via", "responsável": "Alexsandra", "sla": "D+1", "risco": 48, "drivers": "Condições normais"}, {"id": "PX1423", "peça": "Embargos", "cliente": "Thomson", "responsável": "Alexsandra", "sla": "D+1", "risco": 48, "drivers": "Tipo crítico"}, {"id": "PX1969", "peça": "Recurso", "cliente": "B2W", "responsável": "Cinthia", "sla": "D≤2", "risco": 47, "drivers": "Tipo crítico"}, {"id": "PX8841", "peça": "Protocolo simples", "cliente": "Carrefour", "responsável": "Cinthia", "sla": "D≤2", "risco": 47, "drivers": "Condições normais"}, {"id": "PX8046", "peça": "Manifestação", "cliente": "Natura", "responsável": "Amanda", "sla": "D≤2", "risco": 46, "drivers": "Condições normais"}, {"id": "PX2641", "peça": "Embargos", "cliente": "B2W", "responsável": "Josiane", "sla": "D≤3", "risco": 45, "drivers": "Tipo crítico"}, {"id": "PX4362", "peça": "Protocolo simples", "cliente": "Natura", "responsável": "Flávio", "sla": "D≤2", "risco": 45, "drivers": "Condições normais"}, {"id": "PX5739", "peça": "Contestação", "cliente": "B2W", "responsável": "Adriana", "sla": "D≤3", "risco": 45, "drivers": "Condições normais"}, {"id": "PX7102", "peça": "Contestação", "cliente": "B2W", "responsável": "Josiane", "sla": "D≤2", "risco": 44, "drivers": "Condições normais"}, {"id": "PX2065", "peça": "Manifestação", "cliente": "Via", "responsável": "Alexsandra", "sla": "D+1", "risco": 44, "drivers": "Condições normais"}, {"id": "PX2654", "peça": "Contestação", "cliente": "Thomson", "responsável": "Josiane", "sla": "D≤2", "risco": 43, "drivers": "Condições normais"}, {"id": "PX6193", "peça": "Manifestação", "cliente": "B2W", "responsável": "Josiane", "sla": "D≤2", "risco": 43, "drivers": "Condições normais"}, {"id": "PX9034", "peça": "Protocolo simples", "cliente": "Localiza", "responsável": "Cinthia", "sla": "D+1", "risco": 43, "drivers": "Condições normais"}, {"id": "PX2244", "peça": "Manifestação", "cliente": "Via", "responsável": "Flávio", "sla": "D≤2", "risco": 43, "drivers": "Condições normais"}, {"id": "PX9552", "peça": "Protocolo simples", "cliente": "Thomson", "responsável": "Alexsandra", "sla": "D≤2", "risco": 41, "drivers": "Condições normais"}, {"id": "PX8515", "peça": "Embargos", "cliente": "B2W", "responsável": "Josiane", "sla": "D≤2", "risco": 41, "drivers": "Tipo crítico"}, {"id": "PX6272", "peça": "Embargos", "cliente": "Via", "responsável": "Suzana", "sla": "D+1", "risco": 39, "drivers": "Tipo crítico"}, {"id": "PX9500", "peça": "Protocolo simples", "cliente": "B2W", "responsável": "Jonathan", "sla": "D≤2", "risco": 37, "drivers": "Condições normais"}, {"id": "PX7665", "peça": "Protocolo simples", "cliente": "B2W", "responsável": "Alexsandra", "sla": "D≤2", "risco": 37, "drivers": "Condições normais"}, {"id": "PX5462", "peça": "Protocolo simples", "cliente": "Thomson", "responsável": "Alexsandra", "sla": "D≤2", "risco": 36, "drivers": "Condições normais"}, {"id": "PX9719", "peça": "Protocolo simples", "cliente": "Caprich", "responsável": "Josiane", "sla": "D+1", "risco": 36, "drivers": "Condições normais"}, {"id": "PX8453", "peça": "Protocolo simples", "cliente": "Carrefour", "responsável": "Josiane", "sla": "D≤2", "risco": 36, "drivers": "Condições normais"}, {"id": "PX7147", "peça": "Contestação", "cliente": "Caprich", "responsável": "Suzana", "sla": "D≤2", "risco": 34, "drivers": "Condições normais"}, {"id": "PX4570", "peça": "Protocolo simples", "cliente": "Localiza", "responsável": "Cinthia", "sla": "D≤2", "risco": 31, "drivers": "Condições normais"}, {"id": "PX2349", "peça": "Manifestação", "cliente": "Via", "responsável": "Suelly", "sla": "D≤2", "risco": 31, "drivers": "Condições normais"}, {"id": "PX1790", "peça": "Protocolo simples", "cliente": "Localiza", "responsável": "Suzana", "sla": "D≤3", "risco": 25, "drivers": "Condições normais"}]}</script>
+<script>
+(function(){
+  // === util ===
+  const $ = (s,ctx=document)=> ctx.querySelector(s);
+  const $$ = (s,ctx=document)=> Array.from(ctx.querySelectorAll(s));
+  const fmtPct = v => (Math.round(v*10)/10).toFixed(1).replace('.', ',') + '%';
+  const fmtInt = v => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  function getData(){
+    try { return JSON.parse(document.getElementById('suellytics-data').textContent); }
+    catch(e){ return {base:[], preditivo:[]}; }
+  }
+  function rows(){
+    const d = getData();
+    return (d.preditivo && d.preditivo.length ? d.preditivo : d.base).slice();
+  }
+
+  // === ler controles existentes ===
+  function readControls(){
+    const num = (id, d=0)=> {
+      const el = document.getElementById(id);
+      if(!el) return d;
+      const raw = (el.value || el.textContent || '').toString().replace(/[^0-9.,-]/g,'').replace(',','.');
+      const v = Number(raw);
+      return isNaN(v) ? d : v;
+    };
+    const SLA_DIAS = Math.max(1, num('slSl', 1));
+    const ENTRADAS = Math.max(0, num('slIn', 100));
+    const SAIDAS   = Math.max(0, num('slTp', 95));
+    const BACKLOG  = Math.max(0, num('slBk', 360));
+    const BOT = (document.getElementById('ckBot') ? !!document.getElementById('ckBot').checked : true);
+    return {SLA_DIAS, ENTRADAS, SAIDAS, BACKLOG, BOT};
+  }
+
+  // === KPIs a partir dos controles ===
+  function computeKPIs(){
+    const c = readControls();
+    const effOut = c.SAIDAS * (c.BOT ? 1.15 : 1.0); // bot +15%
+    const cap = effOut / Math.max(1, c.ENTRADAS);
+    const slaPct = Math.max(55, Math.min(98, 70 + (cap-1)*25)); // heurística suave
+    const retrab = Math.max(3, Math.min(25, 12 - (slaPct-80)*0.3 + (c.BACKLOG/800)*6));
+    return { sla: Math.round(slaPct), bk: Math.round(c.BACKLOG), tp: Math.round(effOut), rt: Math.round(retrab) };
+  }
+
+  // Preenche KPIs (por IDs) ou pela seção "Indicadores Executivos"
+  function fillKPIs(){
+    const k = computeKPIs();
+
+    const ids = {sla:'kSla', bk:'kBk', tp:'kTp', rt:'kRt'};
+    const hasIds = Object.values(ids).every(id => document.getElementById(id));
+    if(hasIds){
+      document.getElementById('kSla').textContent = fmtPct(k.sla);
+      document.getElementById('kBk').textContent  = fmtInt(k.bk);
+      document.getElementById('kTp').textContent  = fmtInt(k.tp);
+      document.getElementById('kRt').textContent  = fmtPct(k.rt);
+      const set = (id, txt)=>{ const el = document.getElementById(id); if(el) el.textContent = txt; };
+      set('kSlaT', (k.sla>=90? '↑ saudável' : k.sla>=80? '→ atenção' : '↓ risco'));
+      set('kBkT',  (k.bk<=300? '↓ estável' : k.bk<=500? '→ atenção' : '↑ pressão'));
+      set('kTpT',  '→ média ' + fmtInt(k.tp) + '/sem');
+      set('kRtT',  (k.rt<=10? '↓ baixo' : k.rt<=15? '→ moderado' : '↑ alto'));
+      return;
     }
-  });
 
-  // Line = previsão de backlog (30 dias)
-  const days = Array.from({length:30},(_,i)=>i+1);
-  let bk=BK; const series=days.map(d=>{ bk += Math.round((IN_SEM-TP_SEM)/7); return Math.max(0,bk)});
-  line = new Chart(lctx,{
-    type:'line',
-    data:{labels:days, datasets:[{label:'Backlog (proj.)', data:series, tension:.35}]},
-    options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{title:{display:true,text:'dias'}}, y:{title:{display:true,text:'itens'}}}}
-  });
+    // fallback: localizar seção Indicadores Executivos e preencher 4 caixas logo abaixo
+    const secs = $$('section');
+    let target = null;
+    for(const s of secs){
+      const h = s.querySelector('h2,h3,h4');
+      if(!h) continue;
+      const t = h.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+      if(t.includes('indicadores executivos')) { target = s; break; }
+    }
+    if(target){
+      const boxes = $$('.kpi .value, .kpis .value, .kpi strong, .kpi b, .kpi', target).slice(0,4);
+      if(boxes[0]) boxes[0].textContent = fmtPct(k.sla);
+      if(boxes[1]) boxes[1].textContent = fmtInt(k.bk);
+      if(boxes[2]) boxes[2].textContent = fmtInt(k.tp);
+      if(boxes[3]) boxes[3].textContent = fmtPct(k.rt);
+    }
+  }
 
-  // Bars = throughput vs entradas
-  bars = new Chart(bctx,{
-    type:'bar',
-    data:{labels:['Entradas','Throughput'], datasets:[{data:[IN_SEM,TP_SEM]}]},
-    options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
-  });
+  // === Gráficos (se os canvas existem) ===
+  function makeCharts(){
+    if(!window.Chart) return; // Chart.js já está no HTML original
 
-  // Pie = composição por tipo de peça
-  const parts = PECAS.slice(0,5);
-  const vals = parts.map(()=> rnd(30,120));
-  pie = new Chart(pctx,{type:'pie', data:{labels:parts, datasets:[{data:vals}]}, options:{plugins:{legend:{position:'bottom'}}}});
-}
+    // 1) Gauge (gauge canvas id="gauge")
+    const g = document.getElementById('gauge');
+    if(g){
+      const k = computeKPIs();
+      if(window._gaugeChart) _gaugeChart.destroy();
+      _gaugeChart = new Chart(g.getContext('2d'),{
+        type:'doughnut',
+        data:{ labels:['SLA','faltante'], datasets:[{ data:[k.sla, 100-k.sla], backgroundColor:['#17ffd0','#15202b'] }]},
+        options:{ cutout:'70%', rotation:270, circumference:180, plugins:{legend:{display:false}, title:{display:true,text:k.sla+'%', color:'#e8eef6', font:{size:22, weight:'bold'}}} }
+      });
+    }
 
-// =============== PREDITIVO ===============
-function pieceWeight(p){
-  return ({
-    'Recurso':1.35,
-    'Embargos':1.25,
-    'Agravo':1.2,
-    'Contestação':1.15,
-    'Alegações finais':1.1,
-    'Manifestação':1.05,
-    'Protocolo simples':0.85,
-  })[p] || 1.0;
-}
+    // 2) Backlog 30 dias (line id="line")
+    const ln = document.getElementById('line');
+    if(ln){
+      const c = readControls();
+      const eff = c.SAIDAS*(c.BOT?1.15:1);
+      const en = c.ENTRADAS/7, sa = eff/7;
+      let cur = c.BACKLOG; const dias = Array.from({length:31}, (_,i)=> 'D+'+i);
+      const serie = dias.map((_,i)=> { if(i===0) return cur; cur = Math.max(0, cur + (en - sa)); return Math.round(cur); });
+      if(window._lineChart) _lineChart.destroy();
+      _lineChart = new Chart(ln.getContext('2d'),{
+        type:'line',
+        data:{ labels:dias, datasets:[{ label:'Backlog (itens)', data:serie, tension:.35, borderWidth:2, borderColor:'#0ea5e9', backgroundColor:'rgba(14,165,233,.15)', fill:true }]},
+        options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
 
-function computeRiskRow(){
-  const p = PECAS[rnd(0,PECAS.length-1)];
-  const c = CLIENTES[rnd(0,CLIENTES.length-1)];
-  const r = RESPONSAS[rnd(0,RESPONSAS.length-1)];
-  const sla = ['D+1','D≤2','D≤3'][rnd(0,2)];
-  const compl = ["baixa","média","alta"][rnd(0,2)];
-  const complW = {baixa:0.9, 'média':1.1, alta:1.25}[compl] || 1.0;
-  const pressao = Math.max(0, (IN_SEM-TP_SEM)/TP_SEM);
-  const pressW = 1 + pressao*1.4;
-  let base = 40*pieceWeight(p)*complW*pressW; // score bruto
-  base = Math.min(95, Math.max(5, Math.round(base + rnd(-8,8))));
-  const tag = base>=70? 'high' : base>=40? 'med' : 'low';
-  const drivers = [];
-  if(tag==='high') drivers.push('Peça complexa');
-  if(pressao>0.05) drivers.push('Pressão de capacidade');
-  if(p.includes('Recurso')||p.includes('Agravo')||p.includes('Embargos')) drivers.push('Tipo crítico');
-  if(drivers.length===0) drivers.push('Condições normais');
-  return {id: 'PX'+rnd(1000,9999), p, c, r, sla, risco: base, tag, drivers: drivers.join(' • ')};
-}
+    // 3) Entradas x Saídas (bars id="bars")
+    const b = document.getElementById('bars');
+    if(b){
+      const c = readControls();
+      const eff = Math.round(c.SAIDAS*(c.BOT?1.15:1));
+      if(window._barsChart) _barsChart.destroy();
+      _barsChart = new Chart(b.getContext('2d'),{
+        type:'bar',
+        data:{ labels:['Entradas','Saídas (eff.)'], datasets:[{ data:[c.ENTRADAS, eff], backgroundColor:['#f97316','#19c37d'] }]},
+        options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
 
-let RAW_ROWS = [];
-function genRows(){
-  RAW_ROWS = Array.from({length:60}, computeRiskRow).sort((a,b)=> b.risco - a.risco);
-}
+    // 4) Composição por peça (pie id="pie")
+    const p = document.getElementById('pie');
+    if(p){
+      const rs = rows();
+      const count = {};
+      rs.forEach(r => { const key = (r['peça']||r['peca']||r['tipo']||'—'); count[key] = (count[key]||0)+1; });
+      const labels = Object.keys(count).slice(0,8);
+      const data = labels.map(k => count[k]);
+      if(window._pieChart) _pieChart.destroy();
+      _pieChart = new Chart(p.getContext('2d'),{
+        type:'pie',
+        data:{ labels, datasets:[{ data, backgroundColor:['#d4af37','#0ea5e9','#a78bfa','#f97316','#22c55e','#eab308','#ef4444','#06b6d4'] }]},
+        options:{ plugins:{legend:{position:'bottom'}} }
+      });
+    }
+  }
 
-function unique(list, key){
-  return Array.from(new Set(list.map(x=> x[key])));
-}
+  // === Notas do Apresentador ===
+  function toggleNotes(forceOpen){
+    const btn = document.getElementById('btnNotes');
+    const panel = document.getElementById('notes') || document.querySelector('.notes');
+    if(!btn || !panel) return;
+    const open = ()=> panel.classList.add('open');
+    const close = ()=> panel.classList.remove('open');
+    btn.addEventListener('click', ()=>{
+      if(panel.classList.contains('open')) close(); else open();
+    });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+    if(forceOpen===true) open();
+  }
 
-function mountFilters(){
-  const peca = qs('#fPeca'), cli = qs('#fCliente'), resp = qs('#fResp');
-  unique(RAW_ROWS,'p').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; peca.appendChild(o)});
-  unique(RAW_ROWS,'c').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; cli.appendChild(o)});
-  unique(RAW_ROWS,'r').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; resp.appendChild(o)});
-}
+  // === orquestração ===
+  function recompute(){
+    fillKPIs();
+    makeCharts();
+  }
+  function bindControls(){
+    ['slSl','slIn','slTp','slBk','ckBot'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      const evt = (el.tagName==='INPUT' && el.type==='range') ? 'input' : 'change';
+      el.addEventListener(evt, recompute);
+    });
+  }
 
-function applyFilters(){
-  const pSel = qs('#fPeca').value; const cSel = qs('#fCliente').value; const rSel = qs('#fResp').value; const term = (qs('#fBusca').value||'').toLowerCase();
-  return RAW_ROWS.filter(x=> (!pSel||x.p===pSel) && (!cSel||x.c===cSel) && (!rSel||x.r===rSel) &&
-    (term==='' || (x.id+x.p+x.c+x.r+x.sla+x.drivers).toLowerCase().includes(term)))
-    .slice(0, 100);
-}
+  function boot(){
+    try{
+      toggleNotes();
+      bindControls();
+      recompute();
+    }catch(e){ /* silencioso */ }
+  }
 
-function renderPredictive(){
-  const rows = applyFilters().slice(0,10);
-  const tbody = document.querySelector('#tbl tbody');
-  tbody.innerHTML = rows.map(row=>{
-    return `<tr>
-      <td>${row.id}</td>
-      <td>${row.p}</td>
-      <td>${row.c}</td>
-      <td>${row.r}</td>
-      <td>${row.sla}</td>
-      <td><span class="risk ${row.tag}">${row.risco}%</span></td>
-      <td>${row.drivers}</td>
-    </tr>`
-  }).join('');
-}
+  if(document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
 
-function exportCSV(){
-  const rows = applyFilters();
-  const header = ['ID','Peça','Cliente','Responsável','SLA','Risco','Drivers'];
-  const csv = [header.join(',')].concat(rows.map(r=> [r.id, r.p, r.c, r.r, r.sla, r.risco, '"'+r.drivers.replace(/"/g,'""')+'"'].join(','))).join('\n');
-  const blob = new Blob(["\ufeff"+csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'preditivo_suellytics.csv'; a.click(); URL.revokeObjectURL(a.href);
-}
+<!-- *** Fim do Patch Suellytics *** -->
 
-// =============== NOTES PANEL ===============
-function toggleNotes(force){
-  const el = qs('#notes');
-  if(force===true){ el.classList.add('open'); return; }
-  if(force===false){ el.classList.remove('open'); return; }
-  el.classList.toggle('open');
-}
+<script>
+(function(){
+  const $ = (s,ctx=document)=> ctx.querySelector(s);
+  function getData(){
+    try { return JSON.parse(document.getElementById('suellytics-data').textContent); }
+    catch(e){ return {base:[], preditivo:[]}; }
+  }
+  function rows(){
+    const d = getData();
+    return (d.preditivo && d.preditivo.length ? d.preditivo : d.base).slice();
+  }
+  function readControls(){
+    const num = (id, d=0)=> {
+      const el = document.getElementById(id);
+      if(!el) return d;
+      const raw = (el.value || el.textContent || '').toString().replace(/[^0-9.,-]/g,'').replace(',','.');
+      const v = Number(raw);
+      return isNaN(v) ? d : v;
+    };
+    const SLA_DIAS = Math.max(1, num('slSl', 1));
+    const ENTRADAS = Math.max(0, num('slIn', 100));
+    const SAIDAS   = Math.max(0, num('slTp', 95));
+    const BACKLOG  = Math.max(0, num('slBk', 360));
+    const BOT = (document.getElementById('ckBot') ? !!document.getElementById('ckBot').checked : true);
+    return {SLA_DIAS, ENTRADAS, SAIDAS, BACKLOG, BOT};
+  }
 
-// =============== BOOT ===============
-function boot(){
-  readControls();
-  renderPipeline();
-  const metrics = computeKPIs();
-  makeCharts(metrics);
-  genRows();
-  mountFilters();
-  renderPredictive();
-  const url = new URL(window.location);
-  if(url.searchParams.get('notes')==='1'){ toggleNotes(true); }
-}
+  function computeKPIs(){
+    const c = readControls();
+    const effOut = c.SAIDAS * (c.BOT ? 1.15 : 1.0);
+    const cap = effOut / Math.max(1, c.ENTRADAS);
+    const slaPct = Math.max(55, Math.min(98, 70 + (cap-1)*25));
+    return {sla:Math.round(slaPct), eff:Math.round(effOut)};
+  }
 
-// Events
-['slSl','slTp','slIn','slBk','ckBot'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', ()=>{
-    readControls();
-    const m = computeKPIs();
-    makeCharts(m); genRows(); renderPredictive();
-  });
-});
+  // ---- preencher tabela preditivo (id="tbl") e ulAcoes ----
+  function fillPreditivo(){
+    const rs = rows();
+    const arr = rs.slice().sort((a,b)=> (Number(b.risco||0)-Number(a.risco||0)) || ((parseFloat(String(a.sla).replace(',','.'))||9999)-(parseFloat(String(b.sla).replace(',','.'))||9999)) );
+    const tbl = document.getElementById('tbl');
+    if(tbl){
+      const thead = tbl.querySelector('thead'); const tbody = tbl.querySelector('tbody') || tbl.appendChild(document.createElement('tbody'));
+      if(thead && !thead.innerHTML.trim()){
+        thead.innerHTML = '<tr><th>ID</th><th>Peça</th><th>Cliente</th><th>Responsável</th><th>SLA</th><th>Risco</th><th>Drivers</th></tr>';
+      }
+      tbody.innerHTML = arr.map(r=> `<tr><td>${r.id||''}</td><td>${r.peca||r['peça']||''}</td><td>${r.cliente||''}</td><td>${r.responsavel||r['responsável']||''}</td><td>${r.sla||''}</td><td>${r.risco!=null?r.risco:''}</td><td>${r.drivers||''}</td></tr>`).join('');
+    }
+    const ul = document.getElementById('ulAcoes');
+    if(ul) ul.innerHTML = arr.slice(0,5).map(r=> `<li>Priorizar <b>${r.peca||r['peça']||'peça'}</b> — Cliente ${r.cliente||'-'} — Resp. ${r.responsavel||r['responsável']||'-'} — SLA ${r.sla||'-'} — Risco <b>${r.risco||'-'}</b></li>`).join('');
+  }
 
-['fPeca','fCliente','fResp','fBusca'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', renderPredictive);
-});
+  // ---- gráficos adicionais se existirem ----
+  function moreCharts(){
+    if(!window.Chart) return;
+    const c = readControls();
+    const k = computeKPIs();
+    // Economia (resLine)
+    const resLine = document.getElementById('resLine');
+    if(resLine){
+      const ganho = (c.SAIDAS*(c.BOT?0.15:0))*1; // itens/sem com bot (simplificado)
+      const horas = 1; const valorHora = 120;
+      const semanas = 26;
+      const serie = Array.from({length:semanas}, (_,i)=> Math.round((i+1)*ganho*horas*valorHora));
+      if(window._resLine) _resLine.destroy();
+      _resLine = new Chart(resLine.getContext('2d'), {
+        type:'line',
+        data:{ labels: serie.map((_,i)=> 'S'+(i+1)), datasets:[{ data:serie, borderWidth:2, tension:.25, fill:true }]},
+        options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
+    // Tendência SLA (slaTrend)
+    const slaTrend = document.getElementById('slaTrend');
+    if(slaTrend){
+      const weeks=12; const pts=[];
+      for(let i=0;i<weeks;i++){ const eff=c.SAIDAS*(c.BOT?1.15:1)*(1+0.1*i/weeks); const cap=eff/Math.max(1,c.ENTRADAS); const sla=Math.max(55, Math.min(98, 70 + (cap-1)*25)); pts.push(Math.round(sla)); }
+      if(window._slaTrend) _slaTrend.destroy();
+      _slaTrend = new Chart(slaTrend.getContext('2d'), { type:'line', data:{ labels: pts.map((_,i)=>'S'+(i+1)), datasets:[{ data:pts, borderWidth:2, tension:.25, fill:false }]}, options:{ plugins:{legend:{display:false}}, scales:{ y:{min:50,max:100} } } });
+    }
+    // NPS (npsGauge) -> doughnut 100 to -100 scaled to 0..200
+    const npsGauge = document.getElementById('npsGauge');
+    if(npsGauge){
+      const rs = rows(); const avgRisk = rs.length? rs.reduce((s,r)=> s + Number(r.risco||0),0)/rs.length : 0;
+      let nps=Math.round((k.sla-50)-(avgRisk*0.6)); if(nps>100)nps=100; if(nps<-100)nps=-100;
+      const pos = Math.max(0, nps+100); const neg = 200-pos;
+      if(window._npsGauge) _npsGauge.destroy();
+      _npsGauge = new Chart(npsGauge.getContext('2d'), { type:'doughnut', data:{ labels:['Score','Resto'], datasets:[{ data:[pos,neg], backgroundColor:['#19c37d','#1f2937'] }]}, options:{ cutout:'70%', rotation:270, circumference:180, plugins:{legend:{display:false}, title:{display:true,text:nps, color:'#e8eef6', font:{size:22, weight:'bold'}}} } });
+    }
+    // Responsável (respBars) -> barras por responsável
+    const respBars = document.getElementById('respBars');
+    if(respBars){
+      const rs = rows(); const by = {}; rs.forEach(r=>{ const k=(r.responsavel||r['responsável']||'—'); by[k]=(by[k]||0)+1; });
+      const pairs = Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,10);
+      if(window._respBars) _respBars.destroy();
+      _respBars = new Chart(respBars.getContext('2d'), { type:'bar', data:{ labels:pairs.map(p=>p[0]), datasets:[{ data:pairs.map(p=>p[1]) }]}, options:{ plugins:{legend:{display:false}}, indexAxis:'y', scales:{ x:{beginAtZero:true} } } });
+    }
+  }
 
-btnExport.addEventListener('click', exportCSV);
-btnNotes.addEventListener('click', ()=> toggleNotes());
-btnPrint.addEventListener('click', ()=> window.print());
-
-// Clear filters
-btnClear.addEventListener('click', ()=>{
-  ['fPeca','fCliente','fResp','fBusca'].forEach(id=> document.getElementById(id).value='');
-  renderPredictive();
-});
-
-// Start
-boot();
+  function recomputeAll(){ fillPreditivo(); moreCharts(); }
+  function bind(){
+    ['slSl','slIn','slTp','slBk','ckBot'].forEach(id=>{ const el=document.getElementById(id); if(!el) return; const evt=(el.tagName==='INPUT' && el.type==='range')?'input':'change'; el.addEventListener(evt, recomputeAll); });
+  }
+  function boot(){ bind(); recomputeAll(); }
+  if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded', boot);
+})();
 </script>
 </body>
 </html>
