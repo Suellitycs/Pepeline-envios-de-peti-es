@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transformação Digital no Direito — Dashboard Preditivo</title>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#0b1117; /* dark navy */
+      --panel:#0f1722;
+      --ink:#e8eef6;
+      --muted:#94a3b8;
+      --line:#1f2a37;
+      --accent:#d4af37; /* dourado */
+      --ok:#10b981; /* verde */
+      --warn:#f59e0b; /* amarelo */
+      --bad:#ef4444; /* vermelho */
+      --brand:#14c6b7; /* verde-água Suellytics */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";background:linear-gradient(180deg,#0a0f14,#0b1117 35%,#0b1117);color:var(--ink)}
+    a,button{font-family:inherit}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:40;background:rgba(11,17,23,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .wrap{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px}
+    .logo{width:32px;height:32px;border-radius:10px;position:relative;overflow:hidden}
+    .logo:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 200deg at 50% 50%,#222,#a5892a,#ffe08a,#d4af37,#6c5c1a,#222);filter:saturate(1.2) brightness(1.05);animation:spin 7s linear infinite}
+    .logo:after{content:"S";position:absolute;inset:0;display:grid;place-items:center;font-weight:900;color:#1a1a1a;text-shadow:0 0 14px rgba(212,175,55,.45);mix-blend-mode:screen}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+    nav a, .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#0d151d;color:var(--ink);text-decoration:none;font-size:13px}
+    nav a:hover,.btn:hover{border-color:#2c3a49}
+    .btn-prim{border-color:transparent;background:linear-gradient(135deg,#2b3646,#18202a);position:relative}
+    .btn-prim:after{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(135deg,#3b4758,rgba(212,175,55,.45));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+    /* Layout */
+    main{max-width:1180px;margin:22px auto;padding:0 18px;display:grid;gap:18px}
+    section.card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:16px;padding:16px}
+    h1{font-size:26px;margin:0}
+    h2{font-size:18px;margin:0 0 4px}
+    .kicker{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+
+    /* Pipeline */
+    .pipeline{display:grid;grid-template-columns:repeat(7, minmax(120px,1fr));gap:12px}
+    .step{position:relative;background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:84px;overflow:hidden;transition:transform .2s ease}
+    .step:hover{transform:translateY(-2px)}
+    .step h4{margin:0 0 6px;font-size:13px}
+    .step .num{font-size:20px;font-weight:700;letter-spacing:.3px}
+    .step .muted{color:var(--muted);font-size:12px}
+    .step:after{content:"";position:absolute;inset:auto auto -30px -30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(closest-side, rgba(212,175,55,.18), transparent 70%);transform:translate(0,0);transition:transform .5s ease}
+    .step:hover:after{transform:translate(6px, -6px)}
+
+    /* Filters */
+    .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .control{background:#0e151d;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12.5px;display:flex;align-items:center;gap:8px}
+    .control input[type="range"]{width:120px}
+    select, input[type="search"]{background:#0b1218;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px;font-size:12.5px}
+
+    /* KPI Grid */
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .kpi{background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:14px;padding:14px}
+    .kpi .label{color:var(--muted);font-size:12px}
+    .kpi .value{font-size:26px;font-weight:800;margin-top:6px}
+    .kpi .trend{font-size:12px;margin-top:4px}
+    .up{color:var(--ok)} .down{color:var(--bad)}
+
+    /* Charts layout */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .chartbox{background:linear-gradient(180deg,#0f1722,#0b121a);border:1px solid var(--line);border-radius:16px;padding:14px}
+    canvas{max-width:100%}
+
+    /* Preditivo */
+    .pred{display:grid;grid-template-columns:1fr;gap:12px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:10px;border-bottom:1px dashed #1c2633;text-align:left}
+    th{color:var(--muted);font-weight:600}
+    tr:hover{background:rgba(255,255,255,.02)}
+    .risk{display:inline-block;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}
+    .risk.low{background:rgba(16,185,129,.12)}
+    .risk.med{background:rgba(245,158,11,.12)}
+    .risk.high{background:rgba(239,68,68,.12)}
+
+    /* Presenter Notes */
+    .notes{position:fixed;right:0;top:0;bottom:0;width:min(520px,90vw);transform:translateX(110%);transition:transform .35s ease;z-index:60;background:#0b1117;border-left:1px solid var(--line);padding:18px;overflow:auto}
+    .notes.open{transform:translateX(0)}
+    .notes h3{margin-top:0}
+    .tag{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted)}
+
+    /* Footer */
+    footer{opacity:.85;color:var(--muted);text-align:center;padding:24px}
+
+    /* Responsive */
+    @media (max-width:980px){.pipeline{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand"><div class="logo" title="Suellytics"></div> <div>
+        <div style="font-size:14px;letter-spacing:.3px">Suellytics</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:-2px">Transformação Digital no Direito</div>
+      </div></div>
+      <nav>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#indicadores">Indicadores</a>
+        <a href="#graficos">Gráficos</a>
+        <a href="#preditivo">Preditivo</a>
+        <button id="btnExport" class="btn">Exportar CSV</button>
+        <button id="btnNotes" class="btn btn-prim">Notas do Apresentador</button>
+        <button id="btnPrint" class="btn">PDF</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO / CONTROLS -->
+    <section class="card">
+      <h1>Do dado bruto à decisão por evidência</h1>
+      <div class="kicker">Dados simulados para apresentação executiva — pipeline operacional, KPIs e quadro preditivo.</div>
+      <div class="filters" style="margin-top:10px">
+        <div class="control">SLA alvo (dias): <input type="range" id="slSl" min="1" max="7" value="1"> <span id="slSlV">1</span>d</div>
+        <div class="control">Throughput/sem: <input type="range" id="slTp" min="20" max="120" value="85"> <span id="slTpV">85</span></div>
+        <div class="control">Entradas/sem: <input type="range" id="slIn" min="20" max="120" value="90"> <span id="slInV">90</span></div>
+        <div class="control">Backlog atual: <input type="range" id="slBk" min="0" max="800" value="360"> <span id="slBkV">360</span></div>
+        <div class="control"><label><input type="checkbox" id="ckBot" checked> Agenda Bot (+15% throughput)</label></div>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section id="pipeline" class="card">
+      <h2>Pipeline Operacional</h2>
+      <div class="kicker">Fluxo didático — etapas com dados simulados</div>
+      <div class="pipeline" id="pipeGrid"></div>
+    </section>
+
+    <!-- INDICADORES -->
+    <section id="indicadores" class="card">
+      <h2>Indicadores Executivos</h2>
+      <div class="kicker">KPIs de cumprimento, capacidade e qualidade</div>
+      <div class="kpis">
+        <div class="kpi"><div class="label">SLA cumprido</div><div class="value" id="kSla">—</div><div class="trend" id="kSlaT">—</div></div>
+        <div class="kpi"><div class="label">Backlog</div><div class="value" id="kBk">—</div><div class="trend" id="kBkT">—</div></div>
+        <div class="kpi"><div class="label">Throughput (sem)</div><div class="value" id="kTp">—</div><div class="trend" id="kTpT">—</div></div>
+        <div class="kpi"><div class="label">Retrabalho</div><div class="value" id="kRt">—</div><div class="trend" id="kRtT">—</div></div>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section id="graficos" class="grid-2">
+      <div class="chartbox"><h2>% SLA — Gauge</h2><div class="kicker">Meta visual: atingir ≥ 90%</div><canvas id="gauge"></canvas></div>
+      <div class="chartbox"><h2>Backlog — previsão 30 dias</h2><div class="kicker">Tendência projetada considerando cenário atual</div><canvas id="line"></canvas></div>
+      <div class="chartbox"><h2>Throughput vs Entradas</h2><div class="kicker">Leitura de capacidade semanal</div><canvas id="bars"></canvas></div>
+      <div class="chartbox"><h2>Distribuição por tipo de peça</h2><div class="kicker">Composição do volume (simulado)</div><canvas id="pie"></canvas></div>
+    </section>
+
+    <!-- PREDITIVO -->
+    <section id="preditivo" class="card pred">
+      <h2>Painel Preditivo</h2>
+      <div class="kicker">Ranking de risco de atraso (Top 10) — cálculo didático baseado em tipo, complexidade e pressão de capacidade</div>
+      <div class="filters">
+        <select id="fPeca"><option value="">Peça: todas</option></select>
+        <select id="fCliente"><option value="">Cliente: todos</option></select>
+        <select id="fResp"><option value="">Responsável: todos</option></select>
+        <input id="fBusca" type="search" placeholder="Buscar por ID/termo..." />
+        <button id="btnClear" class="btn">Limpar filtros</button>
+      </div>
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Peça</th>
+            <th>Cliente</th>
+            <th>Responsável</th>
+            <th>SLA</th>
+            <th>Risco</th>
+            <th>Drivers</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <aside class="notes" id="notes">
+    <h3>Notas do Apresentador <span class="tag">cola rápida</span></h3>
+    <p><b>Trinca Ágil/IA/Dados:</b> Ágil dá cadência; IA acelera; Dados sustentam decisão. Dash → preditivo → evidência.</p>
+    <p><b>Pipeline:</b> mapa para reduzir erro e viabilizar automação/governança (não engessa).</p>
+    <p><b>SLA & Risco:</b> se Entradas ≥ Throughput, fila cresce; se lead (&gt;SLA), aumenta o risco. Alavancas: capacidade, entrada, meta por peça.</p>
+    <p><b>Preditivo:</b> apoio à priorização. Em produção: rótulos, AUC/F1/MAE, calibração, drift, explicabilidade, revisão humana.</p>
+    <p><b>LawOps:</b> pessoas + processo + tecnologia + rituais/indicadores. Ferramenta é meio, cultura é fim.</p>
+    <p><b>LGPD:</b> minimização, criptografia, perfis, ambientes segregados, logs de evento.</p>
+    <p><b>ROI:</b> robô de agenda poupa horas; checklist reduz retrabalho; relatório executivo cria cadência com cliente.</p>
+  </aside>
+
+  <footer>© Suellytics — Do dado bruto à decisão por evidência</footer>
+
+<script>
+// =============== Helpers ===============
+const rnd = (min,max)=> Math.round(min + Math.random()*(max-min));
+const fmt = (n)=> n.toLocaleString('pt-BR');
+const qs = (s)=> document.querySelector(s);
+const qsa = (s)=> Array.from(document.querySelectorAll(s));
+
+// Palavras sintéticas
+const PECAS = ["Recurso", "Contestação", "Embargos", "Agravo", "Manifestação", "Protocolo simples", "Alegações finais"]; 
+const CLIENTES = ["Carrefour","Caprich","Thomson","Via","B2W","Natura","Localiza"]; 
+const RESPONSAS = ["Adriana","Alexsandra","Amanda","Cinthia","Flávio","Jonathan","Josiane","Suelly","Suzana"];
+
+// Estado inicial (controles)
+let SLA_DIAS = 1; let TP_SEM = 85; let IN_SEM = 90; let BK = 360; let BOT = true;
+
+function readControls(){
+  SLA_DIAS = +slSl.value; TP_SEM = +slTp.value; IN_SEM = +slIn.value; BK = +slBk.value; BOT = ckBot.checked;
+  if(BOT) TP_SEM = Math.round(TP_SEM * 1.15);
+  // labels
+  slSlV.textContent = SLA_DIAS; slTpV.textContent = TP_SEM; slInV.textContent = IN_SEM; slBkV.textContent = BK;
+}
+
+// =============== PIPELINE ===============
+function renderPipeline(){
+  const steps = [
+    {t:"Captura", v:rnd(450,600), d:"intimações/sem"},
+    {t:"Validação", v:rnd(440,590), d:"ajustes & cálculos"},
+    {t:"Classificação", v:rnd(430,580), d:"tipo/urgência"},
+    {t:"Minuta", v:rnd(400,560), d:"assistida por IA"},
+    {t:"Protocolo", v:rnd(380,540), d:"emissão"},
+    {t:"Cliente", v:rnd(370,520), d:"envio & status"},
+    {t:"Auditoria", v:rnd(360,510), d:"logs"},
+  ];
+  pipeGrid.innerHTML = steps.map((s,i)=>`
+    <div class="step">
+      <h4>${i+1}. ${s.t}</h4>
+      <div class="num">${fmt(s.v)}</div>
+      <div class="muted">${s.d}</div>
+    </div>`).join('');
+}
+
+// =============== KPIs ===============
+function computeKPIs(){
+  const net = TP_SEM - IN_SEM; // capacidade líquida
+  const leadSem = net>0? BK / net : Infinity;
+  const leadDias = isFinite(leadSem)? Math.round(leadSem*7) : 999;
+  const risco = isFinite(leadSem)? Math.min(100, Math.max(0, Math.round((leadDias / (SLA_DIAS*7))*100))) : 100;
+  // estimar %SLA cumprido (didático)
+  let slaPct = Math.max(55, Math.min(98, Math.round(100 - (risco*0.45))));
+  const retrabalho = Math.max(5, 25 - Math.round((TP_SEM/10)) + rnd(-2,2));
+
+  // Bind
+  kSla.textContent = slaPct+"%"; kSlaT.innerHTML = (slaPct>=90?'<span class="up">▲</span> meta ≥90%':'<span class="down">▼</span> melhorar');
+  kBk.textContent = fmt(BK); kBkT.textContent = net>0?`lead ${leadDias}d`:`saturado`;
+  kTp.textContent = fmt(TP_SEM); kTpT.textContent = net>0?`capacidade +${fmt(net)}/sem`:`capacidade 0`;
+  kRt.textContent = retrabalho+"%"; kRtT.innerHTML = retrabalho<=10?'<span class="up">▲</span> saudável':'<span class="down">▼</span> revisar checklist';
+
+  return {slaPct, leadDias, risco, net};
+}
+
+// =============== CHARTS ===============
+let gauge,line,bars,pie;
+function makeCharts(metrics){
+  const gctx = document.getElementById('gauge').getContext('2d');
+  const lctx = document.getElementById('line').getContext('2d');
+  const bctx = document.getElementById('bars').getContext('2d');
+  const pctx = document.getElementById('pie').getContext('2d');
+  // Destroy if exists
+  [gauge,line,bars,pie].forEach(c=>{ if(c){c.destroy()} });
+
+  // Gauge = doughnut meia-lua
+  gauge = new Chart(gctx,{
+    type:'doughnut',
+    data:{labels:['% SLA','faltante'],datasets:[{data:[metrics.slaPct,100-metrics.slaPct]}]},
+    options:{responsive:true,cutout:'70%',rotation:270,circumference:180,
+      plugins:{legend:{display:false},tooltip:{enabled:false},
+        title:{display:true,text:metrics.slaPct+'%',color:'#e8eef6',font:{size:24,weight:'bold'}}},
+      elements:{arc:{borderWidth:0}}
+    }
+  });
+
+  // Line = previsão de backlog (30 dias)
+  const days = Array.from({length:30},(_,i)=>i+1);
+  let bk=BK; const series=days.map(d=>{ bk += Math.round((IN_SEM-TP_SEM)/7); return Math.max(0,bk)});
+  line = new Chart(lctx,{
+    type:'line',
+    data:{labels:days, datasets:[{label:'Backlog (proj.)', data:series, tension:.35}]},
+    options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{title:{display:true,text:'dias'}}, y:{title:{display:true,text:'itens'}}}}
+  });
+
+  // Bars = throughput vs entradas
+  bars = new Chart(bctx,{
+    type:'bar',
+    data:{labels:['Entradas','Throughput'], datasets:[{data:[IN_SEM,TP_SEM]}]},
+    options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+  });
+
+  // Pie = composição por tipo de peça
+  const parts = PECAS.slice(0,5);
+  const vals = parts.map(()=> rnd(30,120));
+  pie = new Chart(pctx,{type:'pie', data:{labels:parts, datasets:[{data:vals}]}, options:{plugins:{legend:{position:'bottom'}}}});
+}
+
+// =============== PREDITIVO ===============
+function pieceWeight(p){
+  return ({
+    'Recurso':1.35,
+    'Embargos':1.25,
+    'Agravo':1.2,
+    'Contestação':1.15,
+    'Alegações finais':1.1,
+    'Manifestação':1.05,
+    'Protocolo simples':0.85,
+  })[p] || 1.0;
+}
+
+function computeRiskRow(){
+  const p = PECAS[rnd(0,PECAS.length-1)];
+  const c = CLIENTES[rnd(0,CLIENTES.length-1)];
+  const r = RESPONSAS[rnd(0,RESPONSAS.length-1)];
+  const sla = ['D+1','D≤2','D≤3'][rnd(0,2)];
+  const compl = ["baixa","média","alta"][rnd(0,2)];
+  const complW = {baixa:0.9, 'média':1.1, alta:1.25}[compl] || 1.0;
+  const pressao = Math.max(0, (IN_SEM-TP_SEM)/TP_SEM);
+  const pressW = 1 + pressao*1.4;
+  let base = 40*pieceWeight(p)*complW*pressW; // score bruto
+  base = Math.min(95, Math.max(5, Math.round(base + rnd(-8,8))));
+  const tag = base>=70? 'high' : base>=40? 'med' : 'low';
+  const drivers = [];
+  if(tag==='high') drivers.push('Peça complexa');
+  if(pressao>0.05) drivers.push('Pressão de capacidade');
+  if(p.includes('Recurso')||p.includes('Agravo')||p.includes('Embargos')) drivers.push('Tipo crítico');
+  if(drivers.length===0) drivers.push('Condições normais');
+  return {id: 'PX'+rnd(1000,9999), p, c, r, sla, risco: base, tag, drivers: drivers.join(' • ')};
+}
+
+let RAW_ROWS = [];
+function genRows(){
+  RAW_ROWS = Array.from({length:60}, computeRiskRow).sort((a,b)=> b.risco - a.risco);
+}
+
+function unique(list, key){
+  return Array.from(new Set(list.map(x=> x[key])));
+}
+
+function mountFilters(){
+  const peca = qs('#fPeca'), cli = qs('#fCliente'), resp = qs('#fResp');
+  unique(RAW_ROWS,'p').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; peca.appendChild(o)});
+  unique(RAW_ROWS,'c').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; cli.appendChild(o)});
+  unique(RAW_ROWS,'r').forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; resp.appendChild(o)});
+}
+
+function applyFilters(){
+  const pSel = qs('#fPeca').value; const cSel = qs('#fCliente').value; const rSel = qs('#fResp').value; const term = (qs('#fBusca').value||'').toLowerCase();
+  return RAW_ROWS.filter(x=> (!pSel||x.p===pSel) && (!cSel||x.c===cSel) && (!rSel||x.r===rSel) &&
+    (term==='' || (x.id+x.p+x.c+x.r+x.sla+x.drivers).toLowerCase().includes(term)))
+    .slice(0, 100);
+}
+
+function renderPredictive(){
+  const rows = applyFilters().slice(0,10);
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = rows.map(row=>{
+    return `<tr>
+      <td>${row.id}</td>
+      <td>${row.p}</td>
+      <td>${row.c}</td>
+      <td>${row.r}</td>
+      <td>${row.sla}</td>
+      <td><span class="risk ${row.tag}">${row.risco}%</span></td>
+      <td>${row.drivers}</td>
+    </tr>`
+  }).join('');
+}
+
+function exportCSV(){
+  const rows = applyFilters();
+  const header = ['ID','Peça','Cliente','Responsável','SLA','Risco','Drivers'];
+  const csv = [header.join(',')].concat(rows.map(r=> [r.id, r.p, r.c, r.r, r.sla, r.risco, '"'+r.drivers.replace(/"/g,'""')+'"'].join(','))).join('\n');
+  const blob = new Blob(["\ufeff"+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'preditivo_suellytics.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// =============== NOTES PANEL ===============
+function toggleNotes(force){
+  const el = qs('#notes');
+  if(force===true){ el.classList.add('open'); return; }
+  if(force===false){ el.classList.remove('open'); return; }
+  el.classList.toggle('open');
+}
+
+// =============== BOOT ===============
+function boot(){
+  readControls();
+  renderPipeline();
+  const metrics = computeKPIs();
+  makeCharts(metrics);
+  genRows();
+  mountFilters();
+  renderPredictive();
+  const url = new URL(window.location);
+  if(url.searchParams.get('notes')==='1'){ toggleNotes(true); }
+}
+
+// Events
+['slSl','slTp','slIn','slBk','ckBot'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{
+    readControls();
+    const m = computeKPIs();
+    makeCharts(m); genRows(); renderPredictive();
+  });
+});
+
+['fPeca','fCliente','fResp','fBusca'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderPredictive);
+});
+
+btnExport.addEventListener('click', exportCSV);
+btnNotes.addEventListener('click', ()=> toggleNotes());
+btnPrint.addEventListener('click', ()=> window.print());
+
+// Clear filters
+btnClear.addEventListener('click', ()=>{
+  ['fPeca','fCliente','fResp','fBusca'].forEach(id=> document.getElementById(id).value='');
+  renderPredictive();
+});
+
+// Start
+boot();
+</script>
+</body>
+</html>
